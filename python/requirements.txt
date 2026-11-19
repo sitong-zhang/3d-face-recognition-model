@@ -1,0 +1,6 @@
+# 第三方算法依赖（均为开源项目，见 THIRD_PARTY_NOTICES.md）
+dlib>=19.24
+mediapipe>=0.10.0
+opencv-python>=4.8
+numpy>=1.24
+scikit-image>=0.20        # 仅 demo 读取公开测试人像使用

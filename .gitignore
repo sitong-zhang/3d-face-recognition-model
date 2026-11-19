@@ -1,0 +1,39 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+.pytest_cache/
+
+# Python 模型权重（体积大，用下载脚本获取）
+python/models/*.dat
+python/models/*.bz2
+python/models/*.task
+*.bz2
+
+# 注意：Android assets 里的 face_landmarker.task 需要提交（APP 构建必需，3.6MB）
+
+# Android / Gradle
+android/.gradle/
+android/local.properties
+android/.idea/
+android/*/build/
+android/build/
+android/captures/
+android/externalNativeBuild/
+android/.cxx/
+*.iml
+.gradle/
+
+# APK 构建产物保留在 releases/ 中（不忽略）
+
+# IDE / OS
+.idea/
+.vscode/
+.DS_Store
+*.swp
+
+# 日志
+*.log
