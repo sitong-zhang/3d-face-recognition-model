@@ -8,6 +8,11 @@
     <img src="https://img.shields.io/badge/platform-Android%20%7C%20Python-green.svg" alt="platform">
     <img src="https://img.shields.io/badge/3D%20landmarks-478-orange.svg" alt="landmarks">
   </p>
+  <p>
+    <a href="https://github.com/sitong-zhang/3d-face-recognition-model/releases/download/v1.0.0/Face3D-v1.0.apk">
+      <img src="https://img.shields.io/badge/⬇%20Download-APK%20v1.0-2ea44f.svg" alt="download apk">
+    </a>
+  </p>
 </div>
 
 > **原则 / Principle**：不编造、不夸大。所有算法来自成熟开源项目，本仓库只做接口封装与 APP 集成，
@@ -44,8 +49,10 @@ python examples/demo.py
 ```
 
 ### Android
-用 Android Studio 打开 `android/` 目录，连接设备或模拟器运行；
-或直接下载 [Releases](../../releases) 中的 APK 安装。
+- **直接安装**：下载 [Face3D-v1.0.apk](https://github.com/sitong-zhang/3d-face-recognition-model/releases/download/v1.0.0/Face3D-v1.0.apk) 安装到手机（Android 7.0+，需允许安装未知来源）。
+- **源码构建**：用 Android Studio 打开 `android/` 目录，连接设备或模拟器运行。
+
+APP 使用步骤：打开后点「录入人脸」采集 3D 特征 → 点「扫描人脸」验证，成功时播放苹果 Face ID 风格绿色对勾动画。
 
 ## 演示 / Demos
 
