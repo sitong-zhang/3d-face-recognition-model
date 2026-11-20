@@ -13,7 +13,7 @@
     <a href="https://a98efe28447afa6ae.app.workbuddy.host/?sharecode=Q3RYF7QBKX">
       <img src="https://img.shields.io/badge/🌐%20发布页-在线预览-6f42c1.svg" alt="landing page">
     </a>
-    <a href="https://github.com/sitong-zhang/3d-face-recognition-model/releases/download/v1.0.0/Face3D-v1.0.apk">
+    <a href="https://github.com/sitong-zhang/3d-face-recognition-model/releases/download/v1.0.0/Face3D-v1.1.apk">
       <img src="https://img.shields.io/badge/⬇%20Download-APK-2ea44f.svg" alt="download apk">
     </a>
   </p>
@@ -59,7 +59,7 @@
 ## 快速开始 / Quick Start
 
 ### 安装 APP
-- **直接安装**：下载 [APK](https://github.com/sitong-zhang/3d-face-recognition-model/releases/download/v1.0.0/Face3D-v1.0.apk)（Android 7.0+，需允许安装未知来源）。
+- **直接安装**：下载 [APK](https://github.com/sitong-zhang/3d-face-recognition-model/releases/download/v1.0.0/Face3D-v1.1.apk)（Android 7.0+，需允许安装未知来源）。
 - **源码构建**：Android Studio 打开 `android/`，连接设备运行。
 
 使用步骤：
