@@ -9,6 +9,9 @@
     <img src="https://img.shields.io/badge/3D%20landmarks-478-orange.svg" alt="landmarks">
   </p>
   <p>
+    <a href="https://a98efe28447afa6ae.app.workbuddy.host/?sharecode=Q3RYF7QBKX">
+      <img src="https://img.shields.io/badge/🌐%20发布页-在线预览-6f42c1.svg" alt="landing page">
+    </a>
     <a href="https://github.com/sitong-zhang/3d-face-recognition-model/releases/download/v1.0.0/Face3D-v1.0.apk">
       <img src="https://img.shields.io/badge/⬇%20Download-APK%20v1.0-2ea44f.svg" alt="download apk">
     </a>
