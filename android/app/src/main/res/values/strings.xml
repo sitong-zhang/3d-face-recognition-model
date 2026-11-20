@@ -11,6 +11,31 @@
     <string name="failed">未识别 / 未找到人脸</string>
     <string name="no_face">未检测到人脸，请正对镜头</string>
     <string name="not_enrolled">尚未录入人脸，请先录入</string>
-    <string name="tip_enroll">请将面部置于圆圈内，保持光线充足</string>
+    <string name="tip_enroll">请将面部置于圆圈内，按引导缓慢转头</string>
     <string name="tip_scan">请将面部对准圆圈完成验证</string>
+
+    <!-- 录入命名 -->
+    <string name="enroll_title">为这张脸命名</string>
+    <string name="enroll_name_hint">输入姓名，例如：张三</string>
+    <string name="name_empty">请输入姓名</string>
+    <string name="start_enroll">开始录入</string>
+    <string name="cancel">取消</string>
+
+    <!-- 引导动作 -->
+    <string name="guide_face_center">请将面部置于圆圈内</string>
+    <string name="guide_turn_left">缓慢向左转头</string>
+    <string name="guide_turn_right">缓慢向右转头</string>
+    <string name="guide_lookup">缓慢抬头</string>
+    <string name="guide_lookdown">缓慢低头</string>
+    <string name="guide_finish">正在完成 3D 建模…</string>
+
+    <string name="verified_as">验证通过</string>
+    <string name="enrolled_as">已录入</string>
+    <string name="delete_person">删除此人</string>
+    <string name="delete_confirm">确定删除这个人脸吗？</string>
+    <string name="yes">确定</string>
+    <string name="no">取消</string>
+    <string name="persons_header">已录入人员</string>
+    <string name="no_persons">还没有录入任何人</string>
+    <string name="close">关闭</string>
 </resources>

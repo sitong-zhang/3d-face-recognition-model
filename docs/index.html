@@ -84,7 +84,8 @@
   .check path{stroke:var(--success);stroke-width:7;stroke-linecap:round;stroke-linejoin:round;fill:none;
     stroke-dasharray:80;stroke-dashoffset:80}
   .face-ring.success .check path{animation:draw .5s .1s ease forwards}
-  .app-status{text-align:center;margin-top:26px;font-size:14px;font-weight:700}
+  .app-status{text-align:center;margin-top:22px;font-size:14px;font-weight:700}
+  .app-name{text-align:center;margin-top:4px;font-size:30px;font-weight:850;color:var(--success);letter-spacing:2px}
   .app-btns{padding:24px 26px;display:flex;flex-direction:column;gap:11px;position:absolute;bottom:0;left:0;right:0}
   .app-btn{padding:13px;border-radius:24px;text-align:center;font-weight:700;font-size:13px;color:#fff}
   .app-btn.enroll{background:var(--primary)}
@@ -178,9 +179,9 @@
   <!-- HERO -->
   <header class="hero">
     <div>
-      <span class="badge"><span class="dot"></span> v1.0.0 现已发布 · 免费下载</span>
-      <h1>用<span class="grad">3D 深度</span><br>重新定义人脸验证</h1>
-      <p class="lead">Face3D 是一款安卓端 3D 人脸识别应用。录入人脸、扫描验证，配上苹果 Face ID 风格的流畅动画——一切都在你的手机上本地完成。</p>
+      <span class="badge"><span class="dot"></span> v1.1 全新升级 · 免费下载</span>
+      <h1>用<span class="grad">3D 深度</span><br>认识每一个人</h1>
+      <p class="lead">Face3D 是一款自研安卓 3D 人脸识别应用。录入时输入姓名、按引导缓慢转头完成 3D 建模；扫描时认出你是谁，并在屏幕上显示姓名。苹果 Face ID 风格引导与成功动画，全部本地运行。</p>
       <div class="cta">
         <a class="btn-download" href="https://github.com/sitong-zhang/3d-face-recognition-model/releases/download/v1.0.0/Face3D-v1.0.apk">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -222,8 +223,9 @@
             <div class="check"><svg viewBox="0 0 100 100"><path d="M22 52l19 19 38-42"/></svg></div>
           </div>
           <div class="app-status" id="status" style="color:var(--success)">识别成功</div>
+          <div class="app-name" id="appname">张 明</div>
           <div class="app-btns">
-            <div class="app-hint">已录入 1 张人脸（3D 特征 1434 维）</div>
+            <div class="app-hint">已录入 3 人 · 点击查看/管理</div>
             <div class="app-btn enroll">录入人脸</div>
             <div class="app-btn scan">扫描人脸</div>
           </div>
@@ -236,24 +238,24 @@
   <section id="features">
     <div class="sec-head">
       <div class="sec-tag">Features</div>
-      <div class="sec-title">简单两步，安全验证</div>
-      <p class="sec-desc">没有复杂的设置，打开应用即可使用。所有处理都在设备本地完成。</p>
+      <div class="sec-title">认得出你，也叫得出名字</div>
+      <p class="sec-desc">从命名录入到转身建模，再到扫描报出姓名——完整还原 Apple Face ID 的交互体验，全部本地完成。</p>
     </div>
     <div class="features">
       <div class="feat">
-        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M19 8v6M22 11h-6"/></svg></div>
-        <h3>录入人脸</h3>
-        <p>通过相机采集面部，提取 478 个 3D 关键点作为几何特征，安全保存在本机。</p>
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg></div>
+        <h3>为每张脸命名</h3>
+        <p>录入前输入姓名，为每个人建立独立档案。扫到谁，就喊出谁的名字。</p>
       </div>
       <div class="feat g">
-        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2"/><circle cx="12" cy="12" r="3"/></svg></div>
-        <h3>扫描验证</h3>
-        <p>将当前 3D 特征与录入特征比对，实时反馈相似度与成功 / 失败结果。</p>
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/><path d="M3 21v-5h5"/></svg></div>
+        <h3>转头引导 · 3D 建模</h3>
+        <p>按屏幕引导缓慢转头，分段进度环实时推进，多角度采集 478 个 3D 点构建人脸模型。</p>
       </div>
       <div class="feat v">
         <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div>
-        <h3>Face ID 动画</h3>
-        <p>成功时播放绿色圆环与对勾绘制动画，还原苹果 Face ID 的顺滑视觉体验。</p>
+        <h3>识别成功显示姓名</h3>
+        <p>扫描匹配后播放绿色对勾动画（带震动），并在下方大字显示此人的姓名。</p>
       </div>
     </div>
   </section>
@@ -265,9 +267,9 @@
       <div class="sec-title">三步完成验证</div>
     </div>
     <div class="steps">
-      <div class="step"><h4>安装并打开</h4><p>下载 APK 安装到手机（允许安装未知来源），首次打开授予相机权限。</p></div>
-      <div class="step"><h4>录入人脸</h4><p>点击「录入人脸」，正对镜头，让面部位于圆圈内，等待录入成功。</p></div>
-      <div class="step"><h4>扫描验证</h4><p>点击「扫描人脸」，同样正对镜头，通过后即可看到绿色对勾成功动画。</p></div>
+      <div class="step"><h4>命名并录入</h4><p>点「录入人脸」，输入姓名，把脸放进圆圈，按引导缓慢转头，进度环填满即完成 3D 建模。</p></div>
+      <div class="step"><h4>扫描识别</h4><p>点「扫描人脸」正对镜头，系统与你录入的每个人比对，通过后播放绿色对勾动画。</p></div>
+      <div class="step"><h4>看到姓名</h4><p>识别成功后，屏幕下方会显示此人的姓名——认得出你，也叫得出名字。</p></div>
     </div>
   </section>
 
@@ -298,9 +300,9 @@
       </h3>
       <ul>
         <li>人脸比对基于 478 点 3D 几何特征的相似度，属演示级方案，并非论文级身份识别模型。</li>
-        <li>Face ID 动画为 UI 视觉效果，不代表具备苹果设备硬件级的深度摄像头与活体检测能力。</li>
-        <li>3D 人脸能力来自 MediaPipe 开源项目（Apache 2.0），本应用只做封装与集成，已如实署名。</li>
-        <li>结果受光线、角度、遮挡影响；相似度阈值可按实际场景调整。</li>
+        <li>Face ID 动画为自研 UI 视觉效果，不代表具备苹果设备硬件级的深度摄像头与活体检测能力。</li>
+        <li>架构、3D 特征算法、转头引导、人脸库、UI 与动画均为本项目自研；底层 3D 关键点检测使用 MediaPipe（Apache 2.0）作为基础依赖，已合规署名。</li>
+        <li>结果受光线、角度、遮挡影响；相似度阈值为经验值，可按实际场景调整。</li>
       </ul>
     </div>
   </section>
@@ -311,22 +313,25 @@
       <a href="https://github.com/sitong-zhang/3d-face-recognition-model/releases/tag/v1.0.0" target="_blank">Release 页</a>
       <a href="https://github.com/sitong-zhang/3d-face-recognition-model/blob/main/android/THIRD_PARTY_NOTICES.md" target="_blank">开源声明</a>
     </div>
-    <p>Face3D v1.0.0 · 基于 MediaPipe 3D 人脸 · 示例应用，仅供学习与演示</p>
+    <p>Face3D v1.1 · 自研 3D 人脸识别 · 示例应用，仅供学习与演示</p>
   </footer>
 </div>
 
 <script>
-  // 手机 mockup 循环演示：扫描 -> 成功 -> 重置
+  // 手机 mockup 循环演示：扫描 -> 成功并显示姓名 -> 重置
   const ring = document.getElementById('ring');
   const status = document.getElementById('status');
+  const appname = document.getElementById('appname');
   setInterval(() => {
     ring.classList.remove('success');
     status.textContent = '识别中…';
     status.style.color = 'var(--primary2)';
+    appname.textContent = '';
     setTimeout(() => {
       ring.classList.add('success');
       status.textContent = '识别成功';
       status.style.color = 'var(--success)';
+      appname.textContent = '张 明';
     }, 1600);
   }, 4800);
 </script>

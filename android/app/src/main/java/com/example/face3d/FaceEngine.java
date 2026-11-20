@@ -14,23 +14,23 @@ import com.google.mediapipe.tasks.components.containers.NormalizedLandmark;
 import java.util.List;
 
 /**
- * 人脸引擎：封装 MediaPipe FaceLandmarker（原样调用官方 API，未改动算法）。
+ * 3D 人脸引擎（自研封装层）。
  *
- * 提供 3D 人脸能力：
- *  - 检测 + 478 个 3D 关键点（带 z 深度）
- *  - 录入：把 3D 关键点做归一化后作为"3D 几何特征"保存到本地
- *  - 扫描：把当前 3D 几何特征与录入的特征比对，判断是否同一人
+ * 底层调用 MediaPipe FaceLandmarker 官方 API 做 3D 关键点检测（478 点 + 变换矩阵），
+ * 本类自研的部分：3D 几何归一化、头部姿态估计、多角度特征采集与余弦比对。
  *
- * 诚实说明：这是基于 3D 几何的演示级比对，不是论文级身份识别模型。
+ * 诚实说明：基于 3D 几何的演示级比对，不是论文级身份识别模型。
  */
 public class FaceEngine {
 
     public static class Detection {
-        public final float[] feature;      // 归一化的 3D 几何特征 (478*3)
+        public final float[] feature;               // 归一化 3D 几何特征 (478*3)
         public final List<NormalizedLandmark> landmarks;
         public final boolean hasFace;
-        Detection(float[] f, List<NormalizedLandmark> l, boolean hf) {
-            feature = f; landmarks = l; hasFace = hf;
+        public final float yaw;                     // 左右转头姿态（弧度近似）
+        public final float pitch;                   // 上下俯仰姿态（弧度近似）
+        Detection(float[] f, List<NormalizedLandmark> l, boolean hf, float yaw, float pitch) {
+            feature = f; landmarks = l; hasFace = hf; this.yaw = yaw; this.pitch = pitch;
         }
     }
 
@@ -44,6 +44,7 @@ public class FaceEngine {
                 .setBaseOptions(baseOptions)
                 .setRunningMode(RunningMode.IMAGE)
                 .setNumFaces(1)
+                .setOutputFacialTransformationMatrixes(true)
                 .setMinFaceDetectionConfidence(0.5f)
                 .setMinFacePresenceConfidence(0.5f)
                 .setMinTrackingConfidence(0.5f)
@@ -51,20 +52,22 @@ public class FaceEngine {
         landmarker = FaceLandmarker.createFromOptions(context, options);
     }
 
-    /** 检测一帧，返回 3D 关键点与归一化几何特征。 */
+    /** 检测一帧，返回 3D 关键点、归一化特征与头部姿态。 */
     public Detection detect(Bitmap bitmap) {
         MPImage image = new BitmapImageBuilder(bitmap).build();
         FaceLandmarkerResult result = landmarker.detect(image);
         if (result.faceLandmarks().isEmpty()) {
-            return new Detection(null, null, false);
+            return new Detection(null, null, false, 0f, 0f);
         }
         List<NormalizedLandmark> lms = result.faceLandmarks().get(0);
-        return new Detection(normalize(lms), lms, true);
+        float[] pose = estimatePose(lms);
+        return new Detection(normalize(lms), lms, true, pose[0], pose[1]);
     }
 
     /**
-     * 3D 几何归一化：以鼻尖(索引1)为原点、双眼外眼角(33,263)距离为尺度，
-     * 得到对平移/缩放/近似旋转稳定的特征向量。
+     * 自研：3D 几何归一化。
+     * 以鼻尖(1)为原点、双眼外眼角(33,263)距离为尺度，
+     * 得到对平移/缩放稳定、保留 z 深度的 3D 特征向量。
      */
     private float[] normalize(List<NormalizedLandmark> lms) {
         float cx = lms.get(1).x(), cy = lms.get(1).y(), cz = lms.get(1).z();
@@ -80,17 +83,33 @@ public class FaceEngine {
         return f;
     }
 
+    /**
+     * 自研：用关键点几何近似头部姿态（yaw/pitch）。
+     * 鼻尖相对两眼外眼角中点的水平/垂直偏移，除以眼距归一化。
+     * 用于引导用户"缓慢转头"完成多角度采集，不是精确姿态解算。
+     */
+    private float[] estimatePose(List<NormalizedLandmark> lms) {
+        NormalizedLandmark left = lms.get(33);   // 左眼外眼角
+        NormalizedLandmark right = lms.get(263); // 右眼外眼角
+        NormalizedLandmark nose = lms.get(1);    // 鼻尖
+        float eyeMidX = (left.x() + right.x()) / 2f;
+        float eyeMidY = (left.y() + right.y()) / 2f;
+        float eyeDist = Math.abs(right.x() - left.x());
+        if (eyeDist < 1e-5f) eyeDist = 1e-5f;
+        // 用 tan 近似得到弧度级别的姿态偏移
+        float yaw = (float) Math.atan2(nose.x() - eyeMidX, eyeDist) * 2.0f;
+        float pitch = (float) Math.atan2(nose.y() - eyeMidY, eyeDist) * 2.0f;
+        return new float[]{yaw, pitch};
+    }
+
     private float dist3(NormalizedLandmark a, NormalizedLandmark b) {
         float dx = a.x() - b.x(), dy = a.y() - b.y(), dz = a.z() - b.z();
         return (float) Math.sqrt(dx * dx + dy * dy + dz * dz);
     }
 
-    /**
-     * 比对两段 3D 几何特征的相似度（余弦相似度，0..1，越大越像）。
-     * 归一化后每人特征模长相近，余弦相似度对整体表情变化更鲁棒。
-     */
+    /** 自研：两段 3D 几何特征的余弦相似度（0..1，越大越像）。 */
     public static float similarity(float[] a, float[] b) {
-        if (a == null || b == null || a.length != b.length) return 0f;
+        if (a == null || b == null || a.length != b.length || a.length == 0) return 0f;
         double dot = 0, na = 0, nb = 0;
         for (int i = 0; i < a.length; i++) {
             dot += a[i] * b[i];

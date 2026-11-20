@@ -10,111 +10,159 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <!-- 渐变遮罩，让 UI 更清晰 -->
     <View
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/gradient_overlay" />
 
-    <!-- 顶部标题 -->
+    <!-- 顶部标题栏 -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:gravity="center_horizontal"
-        android:paddingTop="52dp">
+        android:paddingTop="44dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="3D 人脸识别"
             android:textColor="@color/text_primary"
-            android:textSize="24sp"
+            android:textSize="23sp"
             android:textStyle="bold"
             android:letterSpacing="0.06" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="FACE ID · 3D 深度感知"
+            android:text="TRUE 3D · 478 点深度感知"
             android:textColor="@color/primary_light"
-            android:textSize="12sp"
+            android:textSize="11sp"
             android:paddingTop="4dp" />
     </LinearLayout>
 
-    <!-- 中间 Face ID 动画视图 -->
-    <com.example.face3d.FaceIdAnimationView
-        android:id="@+id/faceAnim"
-        android:layout_width="300dp"
-        android:layout_height="300dp"
-        android:layout_gravity="center" />
-
-    <!-- 状态文字 -->
-    <TextView
-        android:id="@+id/statusText"
-        android:layout_width="wrap_content"
+    <!-- 中部 Face ID 动画 + 状态 -->
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="200dp"
-        android:text="@string/hint"
-        android:textColor="@color/text_primary"
-        android:textSize="16sp"
-        android:textStyle="bold" />
+        android:layout_gravity="center"
+        android:orientation="vertical"
+        android:gravity="center_horizontal">
 
-    <TextView
-        android:id="@+id/tipText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="234dp"
-        android:text="点击下方按钮开始"
-        android:textColor="@color/text_secondary"
-        android:textSize="13sp" />
+        <com.example.face3d.FaceIdAnimationView
+            android:id="@+id/faceAnim"
+            android:layout_width="288dp"
+            android:layout_height="288dp" />
 
-    <!-- 底部按钮区 -->
+        <TextView
+            android:id="@+id/statusText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
+            android:text="@string/hint"
+            android:textColor="@color/text_primary"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/nameText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:text=""
+            android:textColor="@color/success"
+            android:textSize="30sp"
+            android:textStyle="bold"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/tipText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:paddingStart="32dp"
+            android:paddingEnd="32dp"
+            android:gravity="center"
+            android:text="点击下方按钮开始"
+            android:textColor="@color/text_secondary"
+            android:textSize="13sp" />
+    </LinearLayout>
+
+    <!-- 底部控制区 -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:orientation="vertical"
-        android:paddingStart="32dp"
-        android:paddingEnd="32dp"
-        android:paddingBottom="46dp">
+        android:paddingStart="28dp"
+        android:paddingEnd="28dp"
+        android:paddingBottom="36dp">
 
-        <TextView
-            android:id="@+id/enrollCount"
+        <LinearLayout
+            android:id="@+id/manageBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="尚未录入人脸"
-            android:textColor="@color/text_secondary"
-            android:textSize="12sp"
-            android:paddingBottom="12dp" />
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:background="@drawable/btn_card"
+            android:paddingStart="16dp"
+            android:paddingEnd="10dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:layout_marginBottom="14dp">
 
-        <Button
-            android:id="@+id/btnEnroll"
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:text="@string/enroll"
-            android:textColor="@android:color/white"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:backgroundTint="@color/primary"
-            android:background="@drawable/btn_rounded" />
+            <TextView
+                android:id="@+id/enrollCount"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="尚未录入人脸"
+                android:textColor="@color/text_secondary"
+                android:textSize="13sp" />
 
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="14dp" />
+            <Button
+                android:id="@+id/btnManage"
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:text="管理"
+                android:textColor="@color/primary_light"
+                android:textSize="13sp"
+                android:backgroundTint="@android:color/transparent"
+                android:minWidth="0dp"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp" />
+        </LinearLayout>
 
-        <Button
-            android:id="@+id/btnScan"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:text="@string/scan"
-            android:textColor="@android:color/white"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:backgroundTint="@color/success"
-            android:background="@drawable/btn_rounded" />
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btnEnroll"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="56dp"
+                android:text="@string/enroll"
+                android:textColor="@android:color/white"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:backgroundTint="@color/primary" />
+
+            <Space
+                android:layout_width="14dp"
+                android:layout_height="match_parent" />
+
+            <Button
+                android:id="@+id/btnScan"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="56dp"
+                android:text="@string/scan"
+                android:textColor="@android:color/white"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:backgroundTint="@color/success" />
+        </LinearLayout>
     </LinearLayout>
 </FrameLayout>
