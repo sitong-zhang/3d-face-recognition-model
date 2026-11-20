@@ -122,6 +122,14 @@
   .feat h3{font-size:18px;margin-bottom:9px}
   .feat p{color:var(--muted);font-size:14px}
 
+  .recon-card{background:linear-gradient(160deg,var(--card),var(--bg2));border:1px solid var(--border);
+    border-radius:22px;padding:22px;max-width:1000px;margin:0 auto}
+  .recon-card img{width:100%;border-radius:14px;display:block}
+  .recon-tags{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:18px}
+  .recon-tags span{background:rgba(79,141,247,.12);border:1px solid rgba(79,141,247,.3);
+    color:var(--primary2);font-size:12px;font-weight:700;padding:7px 14px;border-radius:999px}
+  .recon-cap{text-align:center;color:var(--muted);font-size:13px;margin-top:16px;line-height:1.7}
+
   .specs{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
   .spec{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:22px;text-align:center}
   .spec .n{font-size:26px;font-weight:850;color:var(--primary2)}
@@ -169,6 +177,7 @@
     </div>
     <div class="nav-links">
       <a href="#features">功能</a>
+      <a href="#reconstruction">3D 重建</a>
       <a href="#how">使用</a>
       <a href="#specs">规格</a>
       <a href="#notice">说明</a>
@@ -260,6 +269,26 @@
     </div>
   </section>
 
+  <!-- RECONSTRUCTION -->
+  <section id="reconstruction">
+    <div class="sec-head">
+      <div class="sec-tag">Monocular 3D Reconstruction</div>
+      <div class="sec-title">一张 2D 照片，重建完整 3D 人脸</div>
+      <p class="sec-desc">这是本项目自研的核心算法：弥补普通手机没有 3D 结构光 / 3D 摄像头的硬件缺陷——只靠一张普通照片，用算法恢复出可旋转查看的完整 3D 人脸表面。</p>
+    </div>
+    <div class="recon-card">
+      <img src="assets/reconstruction_views.png" alt="单目3D人脸重建三视角：正面、45度、侧面">
+      <div class="recon-tags">
+        <span>478 个 3D 锚点</span>
+        <span>7257 顶点 · 14368 面</span>
+        <span>鼻尖原点归一化</span>
+        <span>自研纯软件渲染</span>
+        <span>OBJ / PLY 导出</span>
+      </div>
+      <p class="recon-cap">上图为真实测试结果：从一张 2D 人脸照片重建出的 3D 网格，正面可见鼻梁、眼窝、嘴与下巴轮廓，侧面呈现正确的面部深度。算法为锚点驱动的网格拟合（非深度学习重建），细分只提升平滑度、不凭空增加细节。</p>
+    </div>
+  </section>
+
   <!-- HOW -->
   <section id="how">
     <div class="sec-head">
@@ -300,6 +329,7 @@
       </h3>
       <ul>
         <li>人脸比对基于 478 点 3D 几何特征的相似度，属演示级方案，并非论文级身份识别模型。</li>
+        <li>单目 3D 重建为锚点驱动网格拟合，几何精度受限于底层 3D 锚点，非 DECA/EMOCA 等深度学习重建；细分只增加平滑度、不增加真实细节。</li>
         <li>Face ID 动画为自研 UI 视觉效果，不代表具备苹果设备硬件级的深度摄像头与活体检测能力。</li>
         <li>架构、3D 特征算法、转头引导、人脸库、UI 与动画均为本项目自研；底层 3D 关键点检测使用 MediaPipe（Apache 2.0）作为基础依赖，已合规署名。</li>
         <li>结果受光线、角度、遮挡影响；相似度阈值为经验值，可按实际场景调整。</li>
