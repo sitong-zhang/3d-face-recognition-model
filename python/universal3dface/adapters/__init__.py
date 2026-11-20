@@ -11,5 +11,6 @@
 
 from . import dlib_adapter  # noqa: F401
 from . import mediapipe_adapter  # noqa: F401
+from . import reconstruction_adapter  # noqa: F401
 
-__all__ = ["dlib_adapter", "mediapipe_adapter"]
+__all__ = ["dlib_adapter", "mediapipe_adapter", "reconstruction_adapter"]
