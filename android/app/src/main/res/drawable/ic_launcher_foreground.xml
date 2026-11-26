@@ -1,21 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- 前景使用 Lucide 开源 scan-face 图标（专业素材），与启动图标一致 -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="108dp"
     android:height="108dp"
-    android:viewportWidth="108"
-    android:viewportHeight="108">
-    <!-- 扫描框四角 -->
-    <path android:strokeColor="#FFFFFF" android:strokeWidth="4" android:strokeLineCap="round"
-        android:pathData="M28,40 L28,32 Q28,28 32,28 L40,28" />
-    <path android:strokeColor="#FFFFFF" android:strokeWidth="4" android:strokeLineCap="round"
-        android:pathData="M68,28 L76,28 Q80,28 80,32 L80,40" />
-    <path android:strokeColor="#FFFFFF" android:strokeWidth="4" android:strokeLineCap="round"
-        android:pathData="M80,68 L80,76 Q80,80 76,80 L68,80" />
-    <path android:strokeColor="#FFFFFF" android:strokeWidth="4" android:strokeLineCap="round"
-        android:pathData="M40,80 L32,80 Q28,80 28,76 L28,68" />
-    <!-- 人脸简笔 -->
-    <path android:strokeColor="#4F8DF7" android:strokeWidth="4" android:strokeLineCap="round"
-        android:pathData="M42,46 L42,44 M66,46 L66,44" />
-    <path android:strokeColor="#4F8DF7" android:strokeWidth="4" android:strokeLineCap="round"
-        android:pathData="M46,62 Q54,68 62,62" />
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <group
+        android:translateX="4.2"
+        android:translateY="4.2"
+        android:scaleX="0.65"
+        android:scaleY="0.65">
+        <path
+            android:pathData="M3 7V5a2 2 0 0 1 2-2h2"
+            android:strokeColor="#FFFFFF" android:strokeWidth="2"
+            android:strokeLineCap="round" android:strokeLineJoin="round" />
+        <path
+            android:pathData="M17 3h2a2 2 0 0 1 2 2v2"
+            android:strokeColor="#FFFFFF" android:strokeWidth="2"
+            android:strokeLineCap="round" android:strokeLineJoin="round" />
+        <path
+            android:pathData="M21 17v2a2 2 0 0 1-2 2h-2"
+            android:strokeColor="#FFFFFF" android:strokeWidth="2"
+            android:strokeLineCap="round" android:strokeLineJoin="round" />
+        <path
+            android:pathData="M7 21H5a2 2 0 0 1-2-2v-2"
+            android:strokeColor="#FFFFFF" android:strokeWidth="2"
+            android:strokeLineCap="round" android:strokeLineJoin="round" />
+        <path
+            android:pathData="M8 14s1.5 2 4 2 4-2 4-2"
+            android:strokeColor="#FFFFFF" android:strokeWidth="2"
+            android:strokeLineCap="round" android:strokeLineJoin="round" />
+        <path
+            android:pathData="M9 9h.01"
+            android:strokeColor="#FFFFFF" android:strokeWidth="2.2"
+            android:strokeLineCap="round" />
+        <path
+            android:pathData="M15 9h.01"
+            android:strokeColor="#FFFFFF" android:strokeWidth="2.2"
+            android:strokeLineCap="round" />
+    </group>
 </vector>

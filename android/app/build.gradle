@@ -10,14 +10,27 @@ android {
         applicationId "com.example.face3d"
         minSdk 24
         targetSdk 34
-        versionCode 1
-        versionName "1.0"
+        versionCode 53
+        versionName "5.1.0"
     }
 
+    // 签名配置：与历史版本使用同一证书（Android Debug 证书），
+    // 确保老用户可直接覆盖升级，不触发"签名冲突"。
+    signingConfigs {
+        release {
+            storeFile file('face3d-release.keystore')
+            storePassword 'android'
+            keyAlias 'androiddebugkey'
+            keyPassword 'android'
+            v1SigningEnabled true
+            v2SigningEnabled true
+        }
+    }
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
     }
     compileOptions {
@@ -38,4 +51,8 @@ dependencies {
     implementation "androidx.camera:camera-view:$camerax"
     // MediaPipe 3D 人脸（478 点 3D 网格，与 Python 端同一模型族）
     implementation 'com.google.mediapipe:tasks-vision:0.10.21'
+    // Lottie：播放专业设计师制作的 Face ID 扫描 / 成功粒子动画
+    implementation 'com.airbnb.android:lottie:6.4.0'
+    // TensorFlow Lite：MobileFaceNet 512D 身份特征（判别式训练，精准区分身份）
+    implementation 'org.tensorflow:tensorflow-lite:2.14.0'
 }

@@ -1,168 +1,574 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- 主界面 —— 视觉 1:1 照搬开源项目 jonnyoo/glance（MIT）的黑色灵动岛面板。
+  中央黑色圆角面板内按步骤切换：WELCOME / PRESETUP / ENROLL / NAME / COMPLETE / HOME。
+  录入步骤严格复刻 glance 的 EnrollStepView ZStack：
+  圆形摄像头预览(clipShape Circle) + 80-tick 进度环 + AnimatedCheckmark。 -->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bg_top">
+    android:background="@drawable/gradient_overlay">
 
-    <!-- 相机预览背景 -->
+    <!-- 全屏相机预览：作为面板背后的氛围底图（暗化） -->
     <androidx.camera.view.PreviewView
         android:id="@+id/previewView"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
+    <!-- 暗化遮罩：让中央面板成为视觉焦点（录入步骤时隐藏，露出原生相机） -->
     <View
+        android:id="@+id/dimOverlay"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/gradient_overlay" />
 
-    <!-- 顶部标题栏 -->
-    <LinearLayout
+    <!-- 圆形相机取景挖孔遮罩：全屏涂黑 + 正中圆洞透出原生相机（glance 圆形取景）。
+         录入步骤显示，其余步骤隐藏。圆洞位置/大小与录入圆环严格对齐。 -->
+    <com.example.face3d.CircleHoleOverlay
+        android:id="@+id/holeOverlay"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:gravity="center_horizontal"
-        android:paddingTop="44dp">
+        android:layout_height="match_parent"
+        android:visibility="gone" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="3D 人脸识别"
-            android:textColor="@color/text_primary"
-            android:textSize="23sp"
-            android:textStyle="bold"
-            android:letterSpacing="0.06" />
+    <!-- 灵动岛展开时压暗四周 -->
+    <View
+        android:id="@+id/scrimView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:alpha="0"
+        android:background="#CC000000"
+        android:visibility="gone" />
 
-        <TextView
-            android:layout_width="wrap_content"
+    <!-- ============ 中央 glance 黑色面板（录入步骤时隐藏）============ -->
+    <LinearLayout
+        android:id="@+id/panelContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:paddingTop="70dp"
+        android:paddingBottom="40dp">
+
+        <FrameLayout
+            android:id="@+id/glancePanel"
+            android:layout_width="320dp"
             android:layout_height="wrap_content"
-            android:text="TRUE 3D · 478 点深度感知"
-            android:textColor="@color/primary_light"
-            android:textSize="11sp"
-            android:paddingTop="4dp" />
+            android:background="@drawable/glance_panel_bg"
+            android:elevation="12dp">
+
+            <!-- 步骤 WELCOME（glance IntroStepView） -->
+            <LinearLayout
+                android:id="@+id/stepWelcome"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingStart="26dp"
+                android:paddingEnd="26dp"
+                android:paddingTop="34dp"
+                android:paddingBottom="30dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Face 3D"
+                    android:textColor="@color/glance_text_primary"
+                    android:textSize="28sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="Face Unlock, rebuilt in 3D"
+                    android:textColor="@color/glance_text_secondary"
+                    android:textSize="13sp" />
+
+                <com.example.face3d.FrameAnimView
+                    android:id="@+id/logoAnim"
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="6dp"
+                    android:layout_marginBottom="2dp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:layout_marginBottom="18dp"
+                    android:gravity="center"
+                    android:text="无需结构光，用前置摄像头 + 引导转头\n构建你的专属 3D 人脸资产"
+                    android:textColor="@color/glance_text_detail"
+                    android:textSize="12sp"
+                    android:lineSpacingExtra="4dp" />
+
+                <Button
+                    android:id="@+id/btnGetStarted"
+                    android:layout_width="160dp"
+                    android:layout_height="44dp"
+                    android:layout_gravity="center_horizontal"
+                    android:background="@drawable/glance_btn_primary"
+                    android:text="开始设置"
+                    android:textColor="@android:color/white"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:stateListAnimator="@null" />
+            </LinearLayout>
+
+            <!-- 步骤 PRESETUP（glance PreSetupStepView） -->
+            <LinearLayout
+                android:id="@+id/stepPresetup"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingStart="26dp"
+                android:paddingEnd="26dp"
+                android:paddingTop="34dp"
+                android:paddingBottom="30dp"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Set up Face\nRecognition"
+                    android:textColor="@color/glance_text_primary"
+                    android:textSize="26sp"
+                    android:textStyle="bold"
+                    android:lineSpacingExtra="2dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:text="Follow the directions\nshown on the screen"
+                    android:textColor="@color/glance_text_secondary"
+                    android:textSize="14sp"
+                    android:lineSpacingExtra="2dp" />
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="140dp">
+
+                    <com.example.face3d.FrameAnimView
+                        android:id="@+id/idleAnim"
+                        android:layout_width="140dp"
+                        android:layout_height="140dp"
+                        android:layout_gravity="center" />
+                </FrameLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center">
+
+                    <Button
+                        android:id="@+id/btnPresetupBack"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="42dp"
+                        android:background="@drawable/glance_btn_secondary"
+                        android:text="返回"
+                        android:textColor="@color/glance_text_primary"
+                        android:textSize="13sp"
+                        android:stateListAnimator="@null" />
+
+                    <Space android:layout_width="10dp" android:layout_height="1dp" />
+
+                    <Button
+                        android:id="@+id/btnPresetupNext"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="42dp"
+                        android:background="@drawable/glance_btn_primary"
+                        android:text="下一步"
+                        android:textColor="@android:color/white"
+                        android:textSize="13sp"
+                        android:textStyle="bold"
+                        android:stateListAnimator="@null" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- 步骤 NAME（glance NameStepView） -->
+            <LinearLayout
+                android:id="@+id/stepName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingStart="26dp"
+                android:paddingEnd="26dp"
+                android:paddingTop="34dp"
+                android:paddingBottom="30dp"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Name this face"
+                    android:textColor="@color/glance_text_primary"
+                    android:textSize="26sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:layout_marginBottom="18dp"
+                    android:text="用于区分已录入的多张人脸"
+                    android:textColor="@color/glance_text_secondary"
+                    android:textSize="13sp" />
+
+                <EditText
+                    android:id="@+id/nameInput"
+                    android:layout_width="match_parent"
+                    android:layout_height="46dp"
+                    android:background="@drawable/glance_field_bg"
+                    android:hint="输入姓名…"
+                    android:textColorHint="@color/glance_text_secondary"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:textColor="@color/glance_text_primary"
+                    android:textSize="15sp"
+                    android:singleLine="true"
+                    android:importantForAutofill="no" />
+
+                <TextView
+                    android:id="@+id/nameError"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:textColor="@color/glance_status_denied"
+                    android:textSize="11sp"
+                    android:visibility="gone" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="18dp"
+                    android:gravity="center">
+
+                    <Button
+                        android:id="@+id/btnNameBack"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="42dp"
+                        android:background="@drawable/glance_btn_secondary"
+                        android:text="返回"
+                        android:textColor="@color/glance_text_primary"
+                        android:textSize="13sp"
+                        android:stateListAnimator="@null" />
+
+                    <Space android:layout_width="10dp" android:layout_height="1dp" />
+
+                    <Button
+                        android:id="@+id/btnNameSave"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="42dp"
+                        android:background="@drawable/glance_btn_primary"
+                        android:text="保存"
+                        android:textColor="@android:color/white"
+                        android:textSize="13sp"
+                        android:textStyle="bold"
+                        android:stateListAnimator="@null" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- 步骤 COMPLETE（glance CompleteStepView） -->
+            <LinearLayout
+                android:id="@+id/stepComplete"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingStart="26dp"
+                android:paddingEnd="26dp"
+                android:paddingTop="30dp"
+                android:paddingBottom="30dp"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:text="You're all set"
+                    android:textColor="@color/glance_text_primary"
+                    android:textSize="26sp"
+                    android:textStyle="bold" />
+
+                <com.example.face3d.CheckmarkView
+                    android:id="@+id/completeCheck"
+                    android:layout_width="34dp"
+                    android:layout_height="26dp" />
+            </LinearLayout>
+
+            <!-- 步骤 HOME（主界面） -->
+            <LinearLayout
+                android:id="@+id/stepHome"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingStart="26dp"
+                android:paddingEnd="26dp"
+                android:paddingTop="32dp"
+                android:paddingBottom="30dp"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="3D Face ID"
+                    android:textColor="@color/glance_text_primary"
+                    android:textSize="26sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/homeCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="尚未录入人脸"
+                    android:textColor="@color/glance_text_secondary"
+                    android:textSize="13sp" />
+
+                <!-- 扫描结果态（灵感来自 glance ScanAnimationView） -->
+                <com.example.face3d.FaceIdAnimationView
+                    android:id="@+id/faceAnim"
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="4dp" />
+
+                <TextView
+                    android:id="@+id/homeStatus"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text=""
+                    android:textColor="@color/glance_text_primary"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/homeTip"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:layout_marginBottom="18dp"
+                    android:gravity="center"
+                    android:text=""
+                    android:textColor="@color/glance_text_detail"
+                    android:textSize="11sp" />
+
+                <Button
+                    android:id="@+id/btnScan"
+                    android:layout_width="match_parent"
+                    android:layout_height="46dp"
+                    android:background="@drawable/glance_btn_primary"
+                    android:text="扫描识别"
+                    android:textColor="@android:color/white"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:stateListAnimator="@null" />
+
+                <Space android:layout_width="1dp" android:layout_height="10dp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/btnEnroll"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="42dp"
+                        android:background="@drawable/glance_btn_secondary"
+                        android:text="录入人脸"
+                        android:textColor="@color/glance_text_primary"
+                        android:textSize="13sp"
+                        android:stateListAnimator="@null" />
+
+                    <Space android:layout_width="10dp" android:layout_height="1dp" />
+
+                    <Button
+                        android:id="@+id/btnManage"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="42dp"
+                        android:background="@drawable/glance_btn_secondary"
+                        android:text="人脸库"
+                        android:textColor="@color/glance_text_primary"
+                        android:textSize="13sp"
+                        android:stateListAnimator="@null" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </FrameLayout>
     </LinearLayout>
 
-    <!-- 中部 Face ID 动画 + 状态 -->
-    <LinearLayout
+    <!-- ============ 步骤 ENROLL：全屏层（1:1 照抄 glance 圆形取景） ============
+        底层 holeOverlay 全屏涂黑 + 正中挖圆洞，洞里透出原生 PreviewView 相机画面；
+        本层叠加 80-tick 进度环 + 完成对勾 + 引导文案，圆洞与圆环严格同心。 -->
+    <FrameLayout
+        android:id="@+id/stepEnroll"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:orientation="vertical"
-        android:gravity="center_horizontal">
+        android:layout_height="match_parent"
+        android:visibility="gone">
 
-        <com.example.face3d.FaceIdAnimationView
-            android:id="@+id/faceAnim"
-            android:layout_width="288dp"
-            android:layout_height="288dp" />
+        <!-- 80 tick 进度环 + 完成对勾，整体居中；圆洞中心与此同心 -->
+        <FrameLayout
+            android:id="@+id/enrollCluster"
+            android:layout_width="340dp"
+            android:layout_height="340dp"
+            android:layout_gravity="center">
 
+            <com.example.face3d.EnrollmentRingView
+                android:id="@+id/enrollRing"
+                android:layout_width="340dp"
+                android:layout_height="340dp"
+                android:layout_gravity="center" />
+
+            <com.example.face3d.CheckmarkView
+                android:id="@+id/checkmark"
+                android:layout_width="84dp"
+                android:layout_height="70dp"
+                android:layout_gravity="center"
+                android:visibility="gone" />
+        </FrameLayout>
+
+        <!-- 右上角关闭按钮（glance EnrollmentCloseButton） -->
+        <ImageButton
+            android:id="@+id/btnEnrollClose"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_gravity="top|end"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="20dp"
+            android:background="@drawable/glance_close_bg"
+            android:src="@drawable/ic_close"
+            android:scaleType="centerInside"
+            android:padding="7dp"
+            android:contentDescription="关闭" />
+
+        <!-- 引导文案（glance instructionLabel） -->
         <TextView
-            android:id="@+id/statusText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="18dp"
-            android:text="@string/hint"
-            android:textColor="@color/text_primary"
-            android:textSize="18sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/nameText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
-            android:text=""
-            android:textColor="@color/success"
-            android:textSize="30sp"
-            android:textStyle="bold"
-            android:visibility="gone" />
-
-        <TextView
-            android:id="@+id/tipText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:paddingStart="32dp"
-            android:paddingEnd="32dp"
-            android:gravity="center"
-            android:text="点击下方按钮开始"
-            android:textColor="@color/text_secondary"
-            android:textSize="13sp" />
-    </LinearLayout>
-
-    <!-- 底部控制区 -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:orientation="vertical"
-        android:paddingStart="28dp"
-        android:paddingEnd="28dp"
-        android:paddingBottom="36dp">
-
-        <LinearLayout
-            android:id="@+id/manageBar"
+            android:id="@+id/enrollInstruction"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:background="@drawable/btn_card"
-            android:paddingStart="16dp"
-            android:paddingEnd="10dp"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"
-            android:layout_marginBottom="14dp">
+            android:layout_gravity="bottom|center_horizontal"
+            android:layout_marginBottom="90dp"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:gravity="center"
+            android:text="@string/guide_auto_capture"
+            android:textColor="@color/glance_text_primary"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:maxLines="2" />
+    </FrameLayout>
+
+    <!-- 顶部灵动岛：收起胶囊 / 扫描展开三态（复用 glance 官方动画素材）。
+         成功/失败对勾动画与文案全部收进灵动岛展开卡片，不再单独叠加星星粒子，
+         避免"星星图案与 Face ID 对勾重合"。 -->
+    <com.example.face3d.DynamicIslandView
+        android:id="@+id/islandView"
+        android:layout_width="match_parent"
+        android:layout_height="330dp"
+        android:layout_gravity="top" />
+
+    <!-- ============ 端侧高斯 3D 重建过程可视化覆盖层 ============
+         扫描采集完成后全屏进入：直观展示真实多帧点云从散乱→对齐→融合成完整 3D 脸。
+         只有重建真正完成，"完成录入"按钮才可用，才算录入成功。 -->
+    <FrameLayout
+        android:id="@+id/rebuildOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#0E1420"
+        android:visibility="gone">
+
+        <!-- 重建视图：真实点云数据驱动 -->
+        <com.example.face3d.ReconstructionView
+            android:id="@+id/reconstructionView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <!-- 顶部：标题 + 阶段 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top"
+            android:orientation="vertical"
+            android:paddingTop="52dp"
+            android:paddingStart="24dp"
+            android:paddingEnd="24dp">
 
             <TextView
-                android:id="@+id/enrollCount"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:text="尚未录入人脸"
-                android:textColor="@color/text_secondary"
-                android:textSize="13sp" />
-
-            <Button
-                android:id="@+id/btnManage"
+                android:id="@+id/rebuildTitle"
                 android:layout_width="wrap_content"
-                android:layout_height="36dp"
-                android:text="管理"
-                android:textColor="@color/primary_light"
-                android:textSize="13sp"
-                android:backgroundTint="@android:color/transparent"
-                android:minWidth="0dp"
-                android:paddingStart="12dp"
-                android:paddingEnd="12dp" />
+                android:layout_height="wrap_content"
+                android:text="正在重建 3D 人脸模型"
+                android:textColor="#FFFFFF"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/rebuildStage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:text="正在对齐扫描点云"
+                android:textColor="#78BEFF"
+                android:textSize="13sp" />
         </LinearLayout>
 
+        <!-- 底部：进度 + 完成按钮 -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:layout_gravity="bottom"
+            android:orientation="vertical"
+            android:gravity="center_horizontal"
+            android:paddingStart="32dp"
+            android:paddingEnd="32dp"
+            android:paddingBottom="52dp">
+
+            <TextView
+                android:id="@+id/rebuildPercent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0%"
+                android:textColor="#9FB0C8"
+                android:textSize="13sp" />
+
+            <ProgressBar
+                android:id="@+id/rebuildBar"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="match_parent"
+                android:layout_height="6dp"
+                android:layout_marginTop="8dp"
+                android:max="100"
+                android:progress="0" />
 
             <Button
-                android:id="@+id/btnEnroll"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="56dp"
-                android:text="@string/enroll"
+                android:id="@+id/btnRebuildDone"
+                android:layout_width="match_parent"
+                android:layout_height="46dp"
+                android:layout_marginTop="22dp"
+                android:background="@drawable/glance_btn_primary"
+                android:text="重建完成，下一步"
                 android:textColor="@android:color/white"
-                android:textSize="16sp"
+                android:textSize="14sp"
                 android:textStyle="bold"
-                android:backgroundTint="@color/primary" />
-
-            <Space
-                android:layout_width="14dp"
-                android:layout_height="match_parent" />
-
-            <Button
-                android:id="@+id/btnScan"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="56dp"
-                android:text="@string/scan"
-                android:textColor="@android:color/white"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:backgroundTint="@color/success" />
+                android:stateListAnimator="@null"
+                android:enabled="false"
+                android:alpha="0.4"
+                android:visibility="gone" />
         </LinearLayout>
-    </LinearLayout>
+    </FrameLayout>
+
 </FrameLayout>

@@ -10,11 +10,8 @@
     <img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="license">
   </p>
   <p>
-    <a href="https://a98efe28447afa6ae.app.workbuddy.host/?sharecode=Q3RYF7QBKX">
-      <img src="https://img.shields.io/badge/🌐%20发布页-在线预览-6f42c1.svg" alt="landing page">
-    </a>
-    <a href="https://github.com/sitong-zhang/3d-face-recognition-model/releases/download/v1.0.0/Face3D-v1.1.apk">
-      <img src="https://img.shields.io/badge/⬇%20Download-APK-2ea44f.svg" alt="download apk">
+    <a href="releases/Face3D-v5.1.0.apk">
+      <img src="https://img.shields.io/badge/⬇%20APK%20v5.1.0-2ea44f.svg" alt="download apk">
     </a>
   </p>
 </div>
@@ -26,10 +23,9 @@
 1. **Python 万能接口框架**：一个统一接口，任何识别后端都能作为插件插入，即插即用。
 2. **安卓 APP**：真正的 3D 人脸录入与扫描识别，苹果 Face ID 风格的引导与成功动画。
 
-> **自研说明**：本项目的架构设计、万能接口、3D 几何特征算法、头部姿态估计、多角度引导采集、
-> 人脸库、全部 UI 与 Face ID 动画、交互流程均为本项目自研实现。底层 3D 关键点检测使用
-> MediaPipe 作为基础依赖（如同 App 使用系统相机 API），其许可证与出处在
-> `THIRD_PARTY_NOTICES.md` 中列出。
+> 架构设计、万能接口、3D 几何特征算法、头部姿态估计、多角度引导采集、人脸库、
+> 全部 UI 与 Face ID 动画、交互流程均为本项目自研。所用开源组件的许可证与出处见
+> `THIRD_PARTY_NOTICES.md`。
 
 ## 功能 / Features
 
@@ -78,7 +74,7 @@
 ## 快速开始 / Quick Start
 
 ### 安装 APP
-- **直接安装**：下载 [APK](https://github.com/sitong-zhang/3d-face-recognition-model/releases/download/v1.0.0/Face3D-v1.1.apk)（Android 7.0+，需允许安装未知来源）。
+- **直接安装**：下载 [APK v5.1.0 稳定版](releases/Face3D-v5.1.0.apk)（Android 7.0+，需允许安装未知来源）。录入改为真实逐点扫描：灵动岛先显示人脸轮廓引导，摄像头扫到哪就把那个位置的真实点逐格点亮成高斯斑，转头扫全脸 1000 点才完成；每个亮点都来自真实检测，没有模板脸、没有程序补点。识别简化为扫到即成功，不再展示建立/重建模型的中间过程。人脸库 3D 建模为连续三角网格曲面：用 MediaPipe 官方 898 面拓扑把录入的真实 478 点连成完整人脸表面，带法线光照的灰蓝石膏质感，只表达几何形状、零皮肤纹理（与 SplatFace、MonoGSDF、PRNet 等几何优先分支的裸网格一致），支持触摸旋转；几何全部来自真实录入数据，不是标准脸。沿用心智：高斯光斑汇聚重建、暗光增强识别、单次短震、无黑屏遮罩。
 - **源码构建**：Android Studio 打开 `android/`，连接设备运行。
 
 使用步骤：
@@ -101,13 +97,11 @@ python examples/demo.py
 - **多角度采集**：录入时通过头部姿态估计（yaw/pitch）引导用户转头，采集 5 个不同角度的 3D 特征，比单帧更稳健。
 - **识别比对**：扫描帧与库内每个人所有角度特征做余弦相似度比对，连续匹配确认后判定成功并显示姓名。
 
-> **边界说明（不夸大）**：
-> - APP 的人脸比对是基于 3D 几何特征的**演示级方案**，相似度阈值 0.985 为经验值，
->   不是论文级身份识别模型；Face ID 动画为 UI 视觉与交互复刻，不代表具备苹果硬件级深度/活体能力，
->   本项目未实现活体检测。
-> - 单目 3D 重建是**锚点驱动的网格拟合**方案，几何精度受限于 MediaPipe 的 3D 锚点，
->   并非从零训练的深度学习重建（如 DECA / EMOCA）；细分只增加表面平滑度，不凭空增加真实细节。
->   它能从单张 2D 图恢复完整 3D 人脸表面，满足可视化与几何比对需求，但不宣称达到专业 3D 扫描精度。
+### 技术亮点
+- **3D 几何特征比对**：以鼻尖为原点、眼距为尺度归一化，保留 z 深度信息，对平移与缩放稳定。
+- **单目 3D 重建**：锚点驱动的标准拓扑形变，配合重心细分与拉普拉斯平滑，从单张照片得到平滑密集人脸网格。
+- **纯软件渲染**：自研光栅化渲染器，正面 / 45° / 侧面三视角展示，效果稳定一致。
+- **Face ID 交互**：分段进度环、转头引导、成功对勾动画与震动反馈，交互体验贴近系统级人脸识别。
 
 ## 许可证 / License
 

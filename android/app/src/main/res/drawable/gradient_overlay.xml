@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- 白黑主题遮罩：完全不透明的白色渐变，彻底盖住底层全屏相机预览，
+     主界面/命名/扫描结果背后不再透出摄像头画面（仅录入圆洞内显示相机）。 -->
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
     <gradient
         android:angle="90"
-        android:startColor="#CC0B1020"
-        android:centerColor="#66121A33"
-        android:endColor="#CC0B1020" />
+        android:startColor="#FFFFFFFF"
+        android:centerColor="#FFF7F8FA"
+        android:endColor="#FFEDEFF2" />
 </shape>

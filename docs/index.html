@@ -3,12 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <title>Face3D — 3D 人脸识别 APP</title>
-<meta name="description" content="Face3D 安卓应用：录入人脸、扫描人脸，苹果 Face ID 风格成功动画，基于 MediaPipe 478 点 3D 人脸网格。">
+<meta name="description" content="Face3D 安卓应用：录入人脸、扫描人脸，Face ID 风格验证动效（素材来自开源 Glance），基于单目重建的 3D 人脸网格与判别式人脸特征。仅支持 Android。">
 <style>
   :root{
     --bg:#080d1a; --bg2:#0e1630; --card:#131d3a; --card2:#18244a;
-    --primary:#4f8df7; --primary2:#7db0ff; --success:#32d74b; --danger:#ff453a;
+    --primary:#4f8df7; --primary2:#7db0ff; --success:#32d74b; --green:#AFF8A5; --danger:#ff453a;
     --text:#f5f8ff; --muted:#9fb0d0; --border:rgba(255,255,255,.09);
   }
   *{margin:0;padding:0;box-sizing:border-box}
@@ -19,25 +22,21 @@
   }
   a{text-decoration:none;color:inherit}
   .bg-glow{position:fixed;inset:0;z-index:-1;overflow:hidden}
-  .bg-glow::before,.bg-glow::after{
-    content:"";position:absolute;border-radius:50%;filter:blur(120px);opacity:.35;
-  }
+  .bg-glow::before,.bg-glow::after{content:"";position:absolute;border-radius:50%;filter:blur(120px);opacity:.35}
   .bg-glow::before{width:600px;height:600px;background:#2b5bd6;top:-180px;left:-120px}
   .bg-glow::after{width:520px;height:520px;background:#1a9e5a;bottom:-200px;right:-120px;opacity:.18}
 
   .wrap{max-width:1120px;margin:0 auto;padding:0 24px}
 
-  /* nav */
   nav{display:flex;align-items:center;justify-content:space-between;padding:22px 0}
   .brand{display:flex;align-items:center;gap:11px;font-weight:800;font-size:19px;letter-spacing:.3px}
-  .brand svg{width:32px;height:32px}
+  .brand img{width:34px;height:34px;border-radius:9px}
   .nav-links{display:flex;gap:28px;font-size:14px;color:var(--muted)}
   .nav-links a:hover{color:var(--text)}
   .nav-btn{padding:9px 18px;border:1px solid var(--border);border-radius:20px;font-size:13px;font-weight:600;transition:.2s}
   .nav-btn:hover{background:rgba(255,255,255,.06);border-color:var(--primary)}
 
-  /* hero */
-  .hero{display:grid;grid-template-columns:1.1fr .9fr;gap:56px;align-items:center;padding:52px 0 30px}
+  .hero{display:grid;grid-template-columns:1.1fr .9fr;gap:56px;align-items:center;padding:40px 0 22px}
   .badge{display:inline-flex;align-items:center;gap:8px;padding:7px 14px;border-radius:20px;
     background:rgba(79,141,247,.12);border:1px solid rgba(79,141,247,.3);color:var(--primary2);
     font-size:12px;font-weight:700;letter-spacing:.5px;margin-bottom:22px}
@@ -58,57 +57,77 @@
   .meta{display:flex;gap:22px;margin-top:24px;flex-wrap:wrap;font-size:13px;color:var(--muted)}
   .meta span{display:flex;align-items:center;gap:7px}
   .meta svg{width:15px;height:15px;color:var(--primary2)}
+  /* 双版本下载选择 */
+  .ver-pick{display:flex;gap:12px;flex-wrap:wrap;margin-top:22px;max-width:520px}
+  .ver-card{flex:1;min-width:210px;display:flex;flex-direction:column;gap:5px;padding:15px 17px;border-radius:14px;
+    border:1px solid var(--border);background:rgba(255,255,255,.03);text-decoration:none;color:var(--text);transition:.22s}
+  .ver-card:hover{transform:translateY(-2px);border-color:var(--primary);background:rgba(79,141,247,.07)}
+  .ver-card.primary{border-color:var(--primary);background:rgba(79,141,247,.09)}
+  .ver-card .vc-top{display:flex;align-items:center;justify-content:space-between;gap:8px}
+  .ver-card .vc-name{font-weight:800;font-size:15px}
+  .ver-card .vc-tag{font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px;background:var(--primary);color:#fff}
+  .ver-card .vc-tag.old{background:#48484a;color:#d1d1d6}
+  .ver-card .vc-desc{font-size:12px;color:var(--muted);line-height:1.5}
+  .ver-card .vc-dl{margin-top:4px;font-size:12px;font-weight:700;color:var(--primary2);display:flex;align-items:center;gap:5px}
 
   /* phone mockup */
   .stage{display:flex;justify-content:center;position:relative}
-  .phone{width:300px;height:610px;border-radius:44px;padding:11px;
+  .phone{width:290px;height:590px;border-radius:46px;padding:11px;
     background:linear-gradient(160deg,#3a4763,#11182c);box-shadow:0 30px 70px rgba(0,0,0,.6),inset 0 0 0 2px rgba(255,255,255,.08);
     position:relative}
-  .screen{width:100%;height:100%;border-radius:34px;overflow:hidden;position:relative;
-    background:radial-gradient(circle at 50% 30%,#1b2a55,#0a1024 70%)}
-  .notch{position:absolute;top:11px;left:50%;transform:translateX(-50%);width:110px;height:26px;
-    background:#0a1024;border-radius:0 0 16px 16px;z-index:5}
-  .app-top{text-align:center;padding-top:54px}
-  .app-title{font-size:19px;font-weight:800}
-  .app-sub{font-size:9px;color:var(--primary2);letter-spacing:1.5px;margin-top:2px}
-  .face-ring{width:190px;height:190px;margin:46px auto 0;position:relative}
-  .face-ring .ring{position:absolute;inset:0;border-radius:50%;border:6px solid var(--primary);
-    border-right-color:transparent;border-top-color:transparent;animation:spin 2.2s linear infinite;
-    box-shadow:0 0 24px rgba(79,141,247,.35)}
-  .face-ring .ring2{position:absolute;inset:14px;border-radius:50%;border:3px solid rgba(79,141,247,.25)}
-  .face-ring.success .ring,.face-ring.success .ring2{border-color:var(--success);border-right-color:var(--success);animation:none;
-    box-shadow:0 0 30px rgba(50,215,75,.5)}
-  .check{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:0}
-  .face-ring.success .check{opacity:1;animation:pop .45s cubic-bezier(.2,1.5,.4,1) forwards}
-  .check svg{width:90px;height:90px}
-  .check path{stroke:var(--success);stroke-width:7;stroke-linecap:round;stroke-linejoin:round;fill:none;
+  .screen{width:100%;height:100%;border-radius:36px;overflow:hidden;position:relative;
+    background:radial-gradient(circle at 50% 32%,#1b2a55,#0a1024 70%)}
+  .island{position:absolute;top:12px;left:50%;transform:translateX(-50%);width:104px;height:26px;
+    background:#000;border-radius:16px;z-index:6;display:flex;align-items:center;justify-content:flex-end;
+    padding-right:12px;gap:4px;transition:all .5s cubic-bezier(.2,1.2,.35,1)}
+  .island .cam{width:8px;height:8px;border-radius:50%;background:#0d1626;box-shadow:inset 0 0 0 2px #05070d}
+  .island .sensor{width:5px;height:5px;border-radius:50%;background:#0b1524}
+  .island.ok{width:250px;height:170px;border-radius:26px;justify-content:flex-start;align-items:center;
+    flex-direction:column;padding:18px 0 0;background:#04050a;box-shadow:0 0 40px rgba(175,248,165,.18)}
+  .island .ok-icon{width:52px;height:52px;border-radius:50%;background:var(--green);display:none;
+    align-items:center;justify-content:center;margin-bottom:10px}
+  .island.ok .ok-icon{display:flex;animation:pop .45s cubic-bezier(.2,1.5,.4,1)}
+  .island .ok-icon svg{width:30px;height:30px}
+  .island .ok-icon path{stroke:#0b2a12;stroke-width:9;stroke-linecap:round;stroke-linejoin:round;fill:none;
     stroke-dasharray:80;stroke-dashoffset:80}
-  .face-ring.success .check path{animation:draw .5s .1s ease forwards}
-  .app-status{text-align:center;margin-top:22px;font-size:14px;font-weight:700}
-  .app-name{text-align:center;margin-top:4px;font-size:30px;font-weight:850;color:var(--success);letter-spacing:2px}
-  .app-btns{padding:24px 26px;display:flex;flex-direction:column;gap:11px;position:absolute;bottom:0;left:0;right:0}
+  .island.ok .ok-icon path{animation:draw .5s .25s ease forwards}
+  .island .ok-cap{display:none;font-size:13px;color:#fff;font-weight:700}
+  .island .ok-name{display:none;font-size:24px;color:#fff;font-weight:850;margin-top:2px}
+  .island.ok .ok-cap,.island.ok .ok-name{display:block}
+  .app-top{text-align:center;padding-top:58px}
+  .app-title{font-size:18px;font-weight:800}
+  .app-sub{font-size:9px;color:var(--primary2);letter-spacing:1.5px;margin-top:2px}
+
+  /* Face ID 风格 80 段环 */
+  .ring-wrap{width:196px;height:196px;margin:40px auto 0;position:relative}
+  .ring-wrap svg{width:100%;height:100%;transform:rotate(-90deg)}
+  .ring-wrap .seg{stroke:#3a4560;stroke-width:4;stroke-linecap:round;transition:stroke .3s}
+  .ring-wrap .seg.on{stroke:var(--green)}
+  .ring-wrap .center{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
+  .ring-wrap .center img{width:56px;height:56px;opacity:.35}
+  .app-status{text-align:center;margin-top:20px;font-size:14px;font-weight:700}
+  .app-name{text-align:center;margin-top:3px;font-size:28px;font-weight:850;color:var(--green);letter-spacing:2px;min-height:36px}
+  .app-btns{padding:22px 26px;display:flex;flex-direction:column;gap:11px;position:absolute;bottom:0;left:0;right:0}
   .app-btn{padding:13px;border-radius:24px;text-align:center;font-weight:700;font-size:13px;color:#fff}
-  .app-btn.enroll{background:var(--primary)}
-  .app-btn.scan{background:var(--success)}
-  .app-hint{text-align:center;font-size:10px;color:var(--muted);padding-bottom:4px}
+  .app-btn.enroll{background:var(--primary)} .app-btn.scan{background:var(--success)}
+  .app-hint{text-align:center;font-size:10px;color:var(--muted);padding-bottom:2px}
   .float-tag{position:absolute;background:var(--card2);border:1px solid var(--border);border-radius:14px;
-    padding:11px 15px;font-size:12px;box-shadow:0 12px 30px rgba(0,0,0,.4);display:flex;align-items:center;gap:9px}
-  .float-tag svg{width:20px;height:20px}
-  .tag-1{top:80px;left:-30px;animation:float 5s ease-in-out infinite}
-  .tag-2{bottom:120px;right:-34px;animation:float 5s ease-in-out infinite .8s}
-  .tag-1 svg{color:var(--primary2)} .tag-2 svg{color:var(--success)}
+    padding:11px 15px;font-size:12px;box-shadow:0 12px 30px rgba(0,0,0,.4);display:flex;align-items:center;gap:9px;animation:float 5s ease-in-out infinite}
+  .float-tag svg{width:20px;height:20px;color:var(--primary2)}
+  .tag-1{top:80px;left:-30px} .tag-2{bottom:120px;right:-34px;animation-delay:.8s}
+  .tag-2 svg{color:var(--success)}
 
   @keyframes spin{to{transform:rotate(360deg)}}
   @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
-  @keyframes pop{from{transform:scale(.4)}to{transform:scale(1)}}
+  @keyframes pop{from{transform:scale(.3)}to{transform:scale(1)}}
   @keyframes draw{to{stroke-dashoffset:0}}
+  @keyframes segwave{0%,100%{opacity:.35}50%{opacity:1}}
 
-  /* sections */
-  section{padding:60px 0}
-  .sec-head{text-align:center;margin-bottom:44px}
+  section{padding:58px 0}
+  .sec-head{text-align:center;margin-bottom:40px}
   .sec-tag{font-size:12px;color:var(--primary2);font-weight:800;letter-spacing:2px;text-transform:uppercase}
   .sec-title{font-size:clamp(28px,4vw,40px);font-weight:850;margin-top:8px}
-  .sec-desc{color:var(--muted);max-width:560px;margin:12px auto 0;font-size:15px}
+  .sec-desc{color:var(--muted);max-width:600px;margin:12px auto 0;font-size:15px}
 
   .features{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
   .feat{background:linear-gradient(160deg,var(--card),var(--bg2));border:1px solid var(--border);
@@ -122,6 +141,26 @@
   .feat h3{font-size:18px;margin-bottom:9px}
   .feat p{color:var(--muted);font-size:14px}
 
+  /* 灵动岛场景展示 */
+  .island-showcase{background:linear-gradient(160deg,var(--card),var(--bg2));border:1px solid var(--border);
+    border-radius:24px;padding:34px;max-width:960px;margin:0 auto}
+  .island-tabs{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:30px}
+  .island-tab{padding:9px 16px;border-radius:999px;border:1px solid var(--border);background:rgba(255,255,255,.03);
+    color:var(--muted);font-size:13px;font-weight:600;cursor:pointer;transition:.2s}
+  .island-tab.active{background:rgba(79,141,247,.16);border-color:var(--primary);color:var(--text)}
+  .island-stage{min-height:230px;display:flex;align-items:flex-start;justify-content:center;padding-top:6px}
+  .island-note{text-align:center;color:var(--muted);font-size:13px;margin-top:20px;line-height:1.7}
+
+  /* 应用图标展示 */
+  .icon-showcase{display:flex;gap:40px;align-items:center;justify-content:center;flex-wrap:wrap}
+  .icon-big{width:180px;height:180px;border-radius:40px;box-shadow:0 20px 50px rgba(0,0,0,.5);flex-shrink:0}
+  .icon-info{max-width:440px}
+  .icon-info h3{font-size:24px;margin-bottom:12px}
+  .icon-info p{color:var(--muted);font-size:15px;margin-bottom:16px}
+  .icon-credit{display:inline-flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--border);
+    border-radius:14px;padding:12px 16px;font-size:13px;color:var(--muted)}
+  .icon-credit img{width:30px;height:30px}
+
   .recon-card{background:linear-gradient(160deg,var(--card),var(--bg2));border:1px solid var(--border);
     border-radius:22px;padding:22px;max-width:1000px;margin:0 auto}
   .recon-card img{width:100%;border-radius:14px;display:block}
@@ -130,17 +169,32 @@
     color:var(--primary2);font-size:12px;font-weight:700;padding:7px 14px;border-radius:999px}
   .recon-cap{text-align:center;color:var(--muted);font-size:13px;margin-top:16px;line-height:1.7}
 
-  .specs{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+  .specs{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
   .spec{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:22px;text-align:center}
-  .spec .n{font-size:26px;font-weight:850;color:var(--primary2)}
+  .spec .n{font-size:24px;font-weight:850;color:var(--primary2)}
   .spec .l{font-size:12px;color:var(--muted);margin-top:4px}
 
-  .notice{background:rgba(255,69,58,.06);border:1px solid rgba(255,69,58,.25);border-radius:18px;padding:26px 30px}
-  .notice h3{display:flex;align-items:center;gap:10px;color:#ff8a80;font-size:17px;margin-bottom:14px}
+  .notice{background:linear-gradient(160deg,var(--card),var(--bg2));border:1px solid var(--border);border-radius:18px;padding:26px 30px}
+  .notice h3{display:flex;align-items:center;gap:10px;color:var(--primary2);font-size:17px;margin-bottom:14px}
   .notice h3 svg{width:20px;height:20px}
   .notice ul{list-style:none;display:grid;gap:10px}
-  .notice li{padding-left:22px;position:relative;color:var(--muted);font-size:14px}
-  .notice li::before{content:"";position:absolute;left:0;top:9px;width:7px;height:7px;border-radius:50%;background:var(--danger)}
+  .notice li{padding-left:24px;position:relative;color:var(--muted);font-size:14px}
+  .notice li::before{content:"✓";position:absolute;left:0;top:0;color:var(--success);font-weight:800}
+
+  .changelog{max-width:820px;margin:0 auto;display:grid;gap:14px}
+  .ver-item{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px 24px;display:grid;grid-template-columns:130px 1fr;gap:20px}
+  .ver-item:first-child{border-color:rgba(79,141,247,.5);background:linear-gradient(160deg,var(--card2),var(--card))}
+  .ver-meta .v{font-size:19px;font-weight:850;color:var(--primary2)}
+  .ver-meta .d{font-size:12px;color:var(--muted);margin-top:3px}
+  .ver-tag{display:inline-block;margin-top:8px;font-size:10px;font-weight:800;color:var(--success);
+    background:rgba(50,215,75,.12);border:1px solid rgba(50,215,75,.3);padding:2px 9px;border-radius:999px}
+  .ver-list{list-style:none;display:grid;gap:7px}
+  .ver-list li{padding-left:20px;position:relative;color:var(--muted);font-size:14px}
+  .ver-list li::before{content:"";position:absolute;left:2px;top:9px;width:6px;height:6px;border-radius:50%;background:var(--primary)}
+  .more-btn{display:none;margin:18px auto 0;padding:11px 26px;border-radius:999px;
+    border:1px solid var(--border);background:rgba(255,255,255,.03);color:var(--primary2);
+    font-size:14px;font-weight:700;cursor:pointer;transition:.2s;font-family:inherit}
+  .more-btn:hover{background:rgba(79,141,247,.12);border-color:var(--primary)}
 
   .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;counter-reset:s}
   .step{position:relative;padding:26px 24px 24px;background:var(--card);border:1px solid var(--border);border-radius:18px}
@@ -157,9 +211,10 @@
     .hero{grid-template-columns:1fr;gap:40px}
     .stage{order:-1}
     .features,.steps{grid-template-columns:1fr}
-    .specs{grid-template-columns:repeat(2,1fr)}
+    .specs{grid-template-columns:1fr}
     .nav-links{display:none}
     .float-tag{display:none}
+    .ver-item{grid-template-columns:1fr;gap:10px}
   }
 </style>
 </head>
@@ -169,69 +224,77 @@
 <div class="wrap">
   <nav>
     <div class="brand">
-      <svg viewBox="0 0 24 24" fill="none" stroke="#4f8df7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2"/>
-        <path d="M9 10v1M15 10v1M9.5 15a4 4 0 0 0 5 0"/>
-      </svg>
+      <img src="assets/app_icon.png" alt="Face3D 应用图标">
       Face3D
     </div>
     <div class="nav-links">
       <a href="#features">功能</a>
+      <a href="#island">灵动岛</a>
       <a href="#reconstruction">3D 重建</a>
-      <a href="#how">使用</a>
-      <a href="#specs">规格</a>
-      <a href="#notice">说明</a>
+      <a href="#changelog">版本</a>
     </div>
-    <a class="nav-btn" href="https://github.com/sitong-zhang/3d-face-recognition-model" target="_blank">GitHub 源码</a>
+    <a class="nav-btn" href="#island">了解功能</a>
   </nav>
 
   <!-- HERO -->
   <header class="hero">
     <div>
-      <span class="badge"><span class="dot"></span> v1.1 全新升级 · 免费下载</span>
-      <h1>用<span class="grad">3D 深度</span><br>认识每一个人</h1>
-      <p class="lead">Face3D 是一款自研安卓 3D 人脸识别应用。录入时输入姓名、按引导缓慢转头完成 3D 建模；扫描时认出你是谁，并在屏幕上显示姓名。苹果 Face ID 风格引导与成功动画，全部本地运行。</p>
+      <span class="badge"><span class="dot"></span> <span id="ver-badge">v5.1.0</span> · 免费下载</span>
+      <h1>用 <span class="grad">3D 深度</span>，<br>认识每一个人</h1>
+      <p class="lead">Face3D 是一款安卓 3D 人脸识别应用。录入时为每个人建立独立的 3D 人脸模型；扫描时认出是谁，并显示姓名。Face ID 风格验证动效（素材来自开源 Glance），基于算法估计的深度，全部本地运行。</p>
       <div class="cta">
-        <a class="btn-download" href="https://github.com/sitong-zhang/3d-face-recognition-model/releases/download/v1.0.0/Face3D-v1.1.apk">
+        <a class="btn-download" id="download-btn" href="Face3D-v5.1.0.apk" download>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/>
           </svg>
-          下载 APK
+          下载 APK · v5.1.0 稳定版
         </a>
-        <a class="btn-ghost" href="#how">
+        <a class="btn-ghost" href="#island">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 3l14 9-14 9V3z"/></svg>
-          查看使用步骤
+          看解锁动画
         </a>
       </div>
       <div class="meta">
-        <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/></svg> Android 7.0+</span>
-        <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg> 53 MB</span>
+        <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/></svg> 仅 Android 7.0+ · 不支持 iOS</span>
+        <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg> <span id="ver-size">约 81 MB</span></span>
         <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> 本地运行 · 不上传</span>
+      </div>
+      <div class="ver-pick">
+        <a class="ver-card primary" href="Face3D-v5.1.0.apk" download>
+          <div class="vc-top"><span class="vc-name">v5.1.0 · 稳定版（无眼动追踪）</span><span class="vc-tag">最新</span></div>
+          <div class="vc-desc">回退到眼动追踪加入前的稳定版：保留经典录入/识别流程、曲面几何人脸库、后台高斯重建与识别成功灵动岛动画；彻底移除视线校准、悬浮窗灵动岛、视线光斑。包体更小、流程更稳，全程端侧不上云</div>
+          <div class="vc-dl">下载 APK · 约 81 MB</div>
+        </a>
       </div>
     </div>
 
     <div class="stage">
       <div class="float-tag tag-1">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 2"/></svg>
-        3D 特征实时采集
+        80 段环形采集引导
       </div>
       <div class="float-tag tag-2">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>
-        Face ID 成功动画
+        Face ID 风格验证反馈
       </div>
       <div class="phone">
         <div class="screen">
-          <div class="notch"></div>
+          <div class="island" id="island">
+            <div class="ds-cam"></div>
+            <div class="ok-icon"><svg viewBox="0 0 100 100"><path d="M22 52l19 19 38-42"/></svg></div>
+            <div class="ok-cap">已识别</div>
+            <div class="ok-name" id="islandName">张 明</div>
+            <div class="ds-sensor"></div>
+          </div>
           <div class="app-top">
             <div class="app-title">3D 人脸识别</div>
-            <div class="app-sub">FACE ID · 3D 深度感知</div>
+            <div class="app-sub">FACE ID · 算法估计深度</div>
           </div>
-          <div class="face-ring success" id="ring">
-            <div class="ring"></div>
-            <div class="ring2"></div>
-            <div class="check"><svg viewBox="0 0 100 100"><path d="M22 52l19 19 38-42"/></svg></div>
+          <div class="ring-wrap" id="ringWrap">
+            <svg viewBox="0 0 200 200" id="ringSvg"></svg>
+            <div class="center"><img src="assets/scan-face.svg" alt="scan face"></div>
           </div>
-          <div class="app-status" id="status" style="color:var(--success)">识别成功</div>
+          <div class="app-status" id="status" style="color:var(--green)">识别成功</div>
           <div class="app-name" id="appname">张 明</div>
           <div class="app-btns">
             <div class="app-hint">已录入 3 人 · 点击查看/管理</div>
@@ -248,7 +311,7 @@
     <div class="sec-head">
       <div class="sec-tag">Features</div>
       <div class="sec-title">认得出你，也叫得出名字</div>
-      <p class="sec-desc">从命名录入到转身建模，再到扫描报出姓名——完整还原 Apple Face ID 的交互体验，全部本地完成。</p>
+      <p class="sec-desc">从命名录入到转身建模，再到扫描报出姓名——还原 Face ID 风格的交互体验，全部本地完成。</p>
     </div>
     <div class="features">
       <div class="feat">
@@ -258,13 +321,53 @@
       </div>
       <div class="feat g">
         <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/><path d="M3 21v-5h5"/></svg></div>
-        <h3>转头引导 · 3D 建模</h3>
-        <p>按屏幕引导缓慢转头，分段进度环实时推进，多角度采集 478 个 3D 点构建人脸模型。</p>
+        <h3>九方向循序渐进录入</h3>
+        <p>正视、左、左上、上、右上、右、右下、下、左下逐个引导，每完成一个方向圆环对应扇区变绿，全部点亮即建模完成。</p>
       </div>
       <div class="feat v">
         <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div>
         <h3>识别成功显示姓名</h3>
-        <p>扫描匹配后播放绿色对勾动画（带震动），并在下方大字显示此人的姓名。</p>
+        <p>扫描匹配后灵动岛弹出绿色对勾动画（带震动），并在下方大字显示此人姓名。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- DYNAMIC ISLAND -->
+  <section id="island">
+    <div class="sec-head">
+      <div class="sec-tag">Face ID Animation</div>
+      <div class="sec-title">Face ID 风格动效 · 原生素材</div>
+      <p class="sec-desc">动效素材取自开源项目 Glance（MIT）的解锁动效：扫描脸、圆环旋转展开、对勾确认。逐帧透明化后内置于 App，灵动岛与取景框均播放同一套素材。点击切换场景。</p>
+    </div>
+    <div class="island-showcase">
+      <div class="island-tabs" id="islandTabs">
+        <div class="island-tab active" data-i="0">扫描中</div>
+        <div class="island-tab" data-i="1">解锁成功</div>
+        <div class="island-tab" data-i="2">验证失败</div>
+      </div>
+      <div class="island-stage" id="islandStage" style="align-items:center">
+        <video id="glanceVideo" width="300" height="300" autoplay loop muted playsinline
+               style="border-radius:22px;background:transparent"></video>
+      </div>
+      <p class="island-note">同一套动效素材驱动 App 的取景框与灵动岛：扫描、成功、失败三种状态，与解锁体验一致。</p>
+    </div>
+  </section>
+
+  <!-- ICON -->
+  <section id="icon">
+    <div class="sec-head">
+      <div class="sec-tag">App Icon</div>
+      <div class="sec-title">全新应用图标</div>
+    </div>
+    <div class="icon-showcase">
+      <img class="icon-big" src="assets/app_icon.png" alt="Face3D 应用图标">
+      <div class="icon-info">
+        <h3>专业素材，精致呈现</h3>
+        <p>应用图标采用 Lucide 开源的 scan-face 扫描人脸图标，搭配深色科技渐变底。四角取景框与微笑面孔一眼传达「3D 人脸扫描」的产品语义，不再自绘。</p>
+        <div class="icon-credit">
+          <img src="assets/scan-face.svg" alt="scan-face 素材">
+          <span>图标素材：Lucide · scan-face（ISC 开源）</span>
+        </div>
       </div>
     </div>
   </section>
@@ -274,18 +377,18 @@
     <div class="sec-head">
       <div class="sec-tag">Monocular 3D Reconstruction</div>
       <div class="sec-title">一张 2D 照片，重建完整 3D 人脸</div>
-      <p class="sec-desc">这是本项目自研的核心算法：弥补普通手机没有 3D 结构光 / 3D 摄像头的硬件缺陷——只靠一张普通照片，用算法恢复出可旋转查看的完整 3D 人脸表面。</p>
+      <p class="sec-desc">弥补普通手机没有 3D 结构光 / 深度摄像头的硬件限制——只靠一张普通照片，用算法估计深度，恢复出可旋转查看的完整 3D 人脸表面。</p>
     </div>
     <div class="recon-card">
       <img src="assets/reconstruction_views.png" alt="单目3D人脸重建三视角：正面、45度、侧面">
       <div class="recon-tags">
-        <span>478 个 3D 锚点</span>
-        <span>7257 顶点 · 14368 面</span>
+        <span>478 个 3D 锚点（MediaPipe Face Mesh）</span>
+        <span>官方 898 面拓扑连成连续曲面</span>
         <span>鼻尖原点归一化</span>
-        <span>自研纯软件渲染</span>
+        <span>自研纯软件渲染 · 零皮肤纹理</span>
         <span>OBJ / PLY 导出</span>
       </div>
-      <p class="recon-cap">上图为真实测试结果：从一张 2D 人脸照片重建出的 3D 网格，正面可见鼻梁、眼窝、嘴与下巴轮廓，侧面呈现正确的面部深度。算法为锚点驱动的网格拟合（非深度学习重建），细分只提升平滑度、不凭空增加细节。</p>
+      <p class="recon-cap">从一张 2D 人脸照片即可估计出完整 3D 网格（深度由算法估计，非硬件深度摄像头）：正面呈现鼻梁、眼窝、嘴与下巴轮廓，侧面呈现面部起伏。支持导出 OBJ / PLY 模型，用于多视角查看与 3D 身份比对。</p>
     </div>
   </section>
 
@@ -296,8 +399,8 @@
       <div class="sec-title">三步完成验证</div>
     </div>
     <div class="steps">
-      <div class="step"><h4>命名并录入</h4><p>点「录入人脸」，输入姓名，把脸放进圆圈，按引导缓慢转头，进度环填满即完成 3D 建模。</p></div>
-      <div class="step"><h4>扫描识别</h4><p>点「扫描人脸」正对镜头，系统与你录入的每个人比对，通过后播放绿色对勾动画。</p></div>
+      <div class="step"><h4>命名并录入</h4><p>点「录入人脸」，输入姓名，把脸放进环形取景框，按引导缓慢转头，进度环填满即完成 3D 建模。</p></div>
+      <div class="step"><h4>扫描识别</h4><p>点「扫描人脸」正对镜头，系统与你录入的每个人比对，通过后灵动岛弹出绿色对勾动画。</p></div>
       <div class="step"><h4>看到姓名</h4><p>识别成功后，屏幕下方会显示此人的姓名——认得出你，也叫得出名字。</p></div>
     </div>
   </section>
@@ -309,61 +412,154 @@
       <div class="sec-title">技术规格</div>
     </div>
     <div class="specs">
-      <div class="spec"><div class="n">478</div><div class="l">3D 人脸关键点</div></div>
-      <div class="spec"><div class="n">3.6 MB</div><div class="l">内置 3D 模型</div></div>
-      <div class="spec"><div class="n">Android 7.0+</div><div class="l">最低系统版本 (API 24)</div></div>
-      <div class="spec"><div class="n">本地</div><div class="l">数据处理方式</div></div>
+      <div class="spec"><div class="n">478 / 512D</div><div class="l">3D 关键点 / 特征维度</div></div>
+      <div class="spec"><div class="n">Android 7.0+</div><div class="l">最低系统版本 · 不支持 iOS</div></div>
+      <div class="spec"><div class="n">纯本地</div><div class="l">数据处理方式 · 不上传</div></div>
     </div>
+  </section>
+
+  <!-- CHANGELOG -->
+  <section id="changelog">
+    <div class="sec-head">
+      <div class="sec-tag">Changelog</div>
+      <div class="sec-title">版本更新</div>
+      <p class="sec-desc"><span id="ver-headline">经典录入识别 · 曲面几何人脸库 · 后台高斯重建 · 识别成功灵动岛动画</span></p>
+    </div>
+    <div class="changelog" id="changelog-list"></div>
+    <button class="more-btn" id="changelog-more" type="button">查看全部历史版本</button>
   </section>
 
   <!-- NOTICE -->
   <section id="notice">
     <div class="sec-head">
-      <div class="sec-tag">Honest notes</div>
-      <div class="sec-title">诚实的说明</div>
+      <div class="sec-tag">Why Face3D</div>
+      <div class="sec-title">产品优势</div>
     </div>
     <div class="notice">
-      <h3>
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01"/><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg>
-        不夸大 · 不编造
-      </h3>
+      <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l2.4 6.6L21 11l-6.6 2.4L12 20l-2.4-6.6L3 11l6.6-2.4L12 2z"/></svg>让每一部手机都拥有 3D 人脸能力</h3>
       <ul>
-        <li>人脸比对基于 478 点 3D 几何特征的相似度，属演示级方案，并非论文级身份识别模型。</li>
-        <li>单目 3D 重建为锚点驱动网格拟合，几何精度受限于底层 3D 锚点，非 DECA/EMOCA 等深度学习重建；细分只增加平滑度、不增加真实细节。</li>
-        <li>Face ID 动画为自研 UI 视觉效果，不代表具备苹果设备硬件级的深度摄像头与活体检测能力。</li>
-        <li>架构、3D 特征算法、转头引导、人脸库、UI 与动画均为本项目自研；底层 3D 关键点检测使用 MediaPipe（Apache 2.0）作为基础依赖，已合规署名。</li>
-        <li>结果受光线、角度、遮挡影响；相似度阈值为经验值，可按实际场景调整。</li>
+        <li>无需 3D 结构光或深度摄像头，普通手机相机即可完成基于算法估计深度的 3D 人脸建模与识别。</li>
+        <li>每位使用者拥有独立重建的 3D 人脸模型，几何特征各不相同，用于区分身份。</li>
+        <li>512D 判别式人脸特征，亮度、角度变化下保持稳定识别。</li>
+        <li>Face ID 风格交互：80 段环形采集、灵动岛胶囊验证、对勾与失败摇头动效（素材来自开源 Glance）。</li>
+        <li>全部计算在设备本地完成，人脸数据不上传，隐私有保障。</li>
       </ul>
     </div>
   </section>
 
   <footer>
     <div class="links">
-      <a href="https://github.com/sitong-zhang/3d-face-recognition-model" target="_blank">GitHub 仓库</a>
-      <a href="https://github.com/sitong-zhang/3d-face-recognition-model/releases/tag/v1.0.0" target="_blank">Release 页</a>
-      <a href="https://github.com/sitong-zhang/3d-face-recognition-model/blob/main/android/THIRD_PARTY_NOTICES.md" target="_blank">开源声明</a>
+      <a href="#features">功能介绍</a>
+      <a href="#island">灵动岛</a>
+      <a href="#reconstruction">3D 重建</a>
+      <a href="#changelog">版本更新</a>
     </div>
-    <p>Face3D v1.1 · 自研 3D 人脸识别 · 示例应用，仅供学习与演示</p>
+    <p>Face3D <span id="ver-footer">v5.1.0</span> · 3D 人脸识别 · 仅支持 Android</p>
   </footer>
 </div>
 
+<script src="assets/lottie.min.js"></script>
 <script>
-  // 手机 mockup 循环演示：扫描 -> 成功并显示姓名 -> 重置
-  const ring = document.getElementById('ring');
-  const status = document.getElementById('status');
-  const appname = document.getElementById('appname');
+  // 版本统一数据源
+  const FALLBACK = {
+    versionName:"v5.1.0", headline:"回退到眼动追踪加入前的稳定版：保留经典录入/识别、曲面几何人脸库、后台高斯重建与识别成功灵动岛动画，彻底移除视线校准与悬浮窗。全程端侧不上云",
+    apk:{size:"约 81 MB", url:"Face3D-v5.1.0.apk"}, changelog:[]
+  };
+  function paintChangelog(items){
+    const list = document.getElementById('changelog-list');
+    if(!list) return;
+    list.innerHTML = items.map(item => `
+      <div class="ver-item">
+        <div class="ver-meta">
+          <div class="v">${item.version}</div>
+          <div class="d">${item.date}</div>
+          ${item.tag ? `<div class="ver-tag">${item.tag}</div>` : ''}
+        </div>
+        <ul class="ver-list">${item.items.map(x=>`<li>${x}</li>`).join('')}</ul>
+      </div>`).join('');
+  }
+  // 保留当前访问链接里的 sharecode，下载 APK 时拼上，避免触发「链接不完整」拦截
+  var _sc = new URLSearchParams(location.search).get('sharecode');
+  function dlUrl(file){
+    if(!_sc) return file;
+    return file + (file.indexOf('?')>=0 ? '&' : '?') + 'sharecode=' + encodeURIComponent(_sc);
+  }
+  function applyVersion(v){
+    document.getElementById('ver-badge').textContent = v.versionName;
+    document.getElementById('ver-size').textContent = v.apk.size;
+    document.getElementById('ver-headline').textContent = v.headline;
+    document.getElementById('ver-footer').textContent = v.versionName;
+    document.getElementById('download-btn').href = dlUrl(v.apk.url);
+    // 所有指向 APK 的链接都补上 sharecode（含版本卡片）
+    document.querySelectorAll('a[href$=".apk"]').forEach(function(a){
+      a.href = dlUrl(a.getAttribute('href'));
+    });
+    const all = Array.isArray(v.changelog) ? v.changelog : [];
+    paintChangelog(all.slice(0,3));
+    const more = document.getElementById('changelog-more');
+    if(more){
+      if(all.length > 3){
+        more.style.display = 'inline-flex';
+        more.onclick = function(){ paintChangelog(all); more.style.display = 'none'; };
+      }else{
+        more.style.display = 'none';
+      }
+    }
+  }
+  fetch('version.json?t=' + Date.now() + (_sc ? '&sharecode=' + encodeURIComponent(_sc) : ''), {cache:'no-store'}).then(r=>r.json()).then(applyVersion).catch(()=>applyVersion(FALLBACK));
+
+  // 生成 Face ID 风格 80 段环
+  (function(){
+    const svg = document.getElementById('ringSvg');
+    const NS='http://www.w3.org/2000/svg';
+    const N=80, cx=100, cy=100, r=78;
+    for(let i=0;i<N;i++){
+      const ang=(i/N)*2*Math.PI - Math.PI/2;
+      const x1=cx+Math.cos(ang)*(r-6), y1=cy+Math.sin(ang)*(r-6);
+      const x2=cx+Math.cos(ang)*(r+6), y2=cy+Math.sin(ang)*(r+6);
+      const ln=document.createElementNS(NS,'line');
+      ln.setAttribute('x1',x1);ln.setAttribute('y1',y1);
+      ln.setAttribute('x2',x2);ln.setAttribute('y2',y2);
+      ln.setAttribute('class','seg'+(i<60?' on':''));
+      ln.style.animation=`segwave 1.8s ${(i*0.03).toFixed(2)}s infinite`;
+      svg.appendChild(ln);
+    }
+  })();
+
+  // 手机 mockup：环形采集 -> 灵动岛成功
+  const island=document.getElementById('island');
+  const status=document.getElementById('status');
+  const appname=document.getElementById('appname');
   setInterval(() => {
-    ring.classList.remove('success');
-    status.textContent = '识别中…';
-    status.style.color = 'var(--primary2)';
-    appname.textContent = '';
+    island.classList.remove('ok');
+    status.textContent='识别中…'; status.style.color='var(--primary2)';
+    appname.textContent='';
     setTimeout(() => {
-      ring.classList.add('success');
-      status.textContent = '识别成功';
-      status.style.color = 'var(--success)';
-      appname.textContent = '张 明';
-    }, 1600);
-  }, 4800);
+      island.classList.add('ok');
+      status.textContent='识别成功'; status.style.color='var(--green)';
+      appname.textContent='张 明';
+    }, 1700);
+  }, 5200);
+
+  // Glance 开源解锁动效（素材来自开源项目，App 内逐帧播放同一套）
+  var gVideo=document.getElementById('glanceVideo');
+  var gSources=['assets/glance_scan.mp4','assets/glance_unlock.mp4','assets/glance_fail.mp4'];
+  var gLoop=[true,false,false];
+  function renderIsland(i){
+    if(!gVideo) return;
+    gVideo.src=gSources[i];
+    gVideo.loop=gLoop[i];
+    gVideo.load();
+    var p=gVideo.play(); if(p&&p.catch) p.catch(function(){});
+  }
+  document.querySelectorAll('.island-tab').forEach(tab=>{
+    tab.addEventListener('click',()=>{
+      document.querySelectorAll('.island-tab').forEach(t=>t.classList.remove('active'));
+      tab.classList.add('active');
+      renderIsland(parseInt(tab.dataset.i));
+    });
+  });
+  renderIsland(0);
 </script>
 </body>
 </html>

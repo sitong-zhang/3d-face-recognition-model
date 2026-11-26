@@ -1,13 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="bg_top">#070B16</color>
-    <color name="bg_bottom">#0E1830</color>
-    <color name="primary">#4F8DF7</color>
-    <color name="primary_light">#7DB0FF</color>
-    <color name="success">#32D74B</color>
-    <color name="error">#FF453A</color>
-    <color name="text_primary">#FFFFFF</color>
-    <color name="text_secondary">#AAB4C8</color>
-    <color name="card">#16203A</color>
-    <color name="gold">#FFD60A</color>
+    <!-- 白黑配色（GlanceTheme.swift 结构保留，色值改为白底黑字） -->
+    <color name="glance_accent">#1C1C1E</color>
+    <color name="glance_accent_pale">#E5E5EA</color>
+    <color name="glance_accent_bright">#636366</color>
+    <color name="glance_accent_deep">#000000</color>
+    <color name="glance_panel">#FFFFFF</color>
+    <color name="glance_surface">#F2F2F7</color>
+    <color name="glance_surface_raised">#E5E5EA</color>
+    <color name="glance_text_primary">#1C1C1E</color>
+    <color name="glance_text_secondary">#6E6E73</color>
+    <color name="glance_text_detail">#8E8E93</color>
+    <color name="glance_status_granted">#248A3D</color>
+    <color name="glance_status_denied">#D70015</color>
+
+    <!-- 背景：白色渐变 -->
+    <color name="bg_top">#FFFFFF</color>
+    <color name="bg_bottom">#F2F3F5</color>
+    <color name="primary">#1C1C1E</color>
+    <color name="primary_light">#48484A</color>
+    <color name="success">#248A3D</color>
+    <color name="error">#D70015</color>
+    <color name="text_primary">#1C1C1E</color>
+    <color name="text_secondary">#6E6E73</color>
+    <color name="card">#FFFFFF</color>
+    <color name="gold">#B8860B</color>
 </resources>

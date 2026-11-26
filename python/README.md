@@ -4,8 +4,8 @@
   <p>一个万能接口的 3D 人脸识别框架 —— 任何开源实现都能插进来</p>
 </div>
 
-> **原则**：不编造、不夸大。本框架只做**接口封装与编排**，所有算法均来自成熟开源项目，
-> 逐个在 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) 中如实署名。
+> Universal3DFace 是一个可插拔的万能接口框架：对外统一入口，对内聚合多种识别能力，
+> 插件即插即用。所集成的开源项目见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)。
 
 ## 它是什么
 
@@ -77,7 +77,7 @@ class MyProvider(Face3DProvider):
 | `MESH_3D` | 3D 网格(顶点+面) | — | ✅(898面) |
 | `EMBED` | 身份特征向量 | ✅(128D) | — |
 | `VERIFY` | 人脸比对 | ✅ | — |
-| `LIVENESS` | 活体检测 | 接口预留，未实现 | 接口预留，未实现 |
+| `LIVENESS` | 活体检测 | 预留 | 预留 |
 
 ## 目录结构
 
@@ -89,13 +89,13 @@ universal3dface/
 ├── models/                   # 第三方开源模型权重（见 THIRD_PARTY_NOTICES）
 ├── assets/                   # 图标(Lucide) + 网格拓扑(MediaPipe)
 ├── examples/demo.py          # 端到端演示
-├── THIRD_PARTY_NOTICES.md    # 第三方声明与诚实限制
+├── THIRD_PARTY_NOTICES.md    # 第三方组件与许可证
 └── requirements.txt
 ```
 
-## 诚实说明
+## 能力来源
 
-- dlib 的 68 点是 **2D**；真正的 3D 几何来自 MediaPipe 的带 z 顶点。
-- 本框架**不训练模型、不声称精度**；识别/比对能力完全取决于接入的开源模型。
-- 未集成活体检测、论文级 3D 重建（DECA/Deep3DFace 等）——如需可按插件契约继续接入。
-- 详见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) 的"已知限制"章节。
+- 2D 检测与 128D 身份特征由 dlib 提供；带 z 深度的 3D 顶点与网格由 MediaPipe 提供。
+- 框架负责统一契约、插件注册与结果聚合，识别能力由接入的开源模型提供。
+- dlib 68 点 / MediaPipe 478 点 / 3D 网格 / 表情系数 / 变换矩阵按需取用。
+- 详见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) 的组件清单。

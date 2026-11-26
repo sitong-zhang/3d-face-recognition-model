@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 白黑主题主按钮：黑底胶囊 -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_pressed="true">
+        <shape android:shape="rectangle">
+            <solid android:color="#3A3A3C"/>
+            <corners android:radius="22dp"/>
+        </shape>
+    </item>
+    <item android:state_enabled="false">
+        <shape android:shape="rectangle">
+            <solid android:color="#C7C7CC"/>
+            <corners android:radius="22dp"/>
+        </shape>
+    </item>
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="#1C1C1E"/>
+            <corners android:radius="22dp"/>
+        </shape>
+    </item>
+</selector>

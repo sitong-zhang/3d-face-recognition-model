@@ -3,12 +3,13 @@
     <string name="app_name">3D 人脸识别</string>
     <string name="enroll">录入人脸</string>
     <string name="scan">扫描人脸</string>
-    <string name="hint">点击下方按钮开始</string>
+    <string name="hint"></string>
     <string name="scanning">识别中…</string>
     <string name="enrolling">正在录入…</string>
     <string name="success">识别成功</string>
     <string name="enroll_success">录入成功</string>
     <string name="failed">未识别 / 未找到人脸</string>
+    <string name="liveness_fail">请使用真人验证</string>
     <string name="no_face">未检测到人脸，请正对镜头</string>
     <string name="not_enrolled">尚未录入人脸，请先录入</string>
     <string name="tip_enroll">请将面部置于圆圈内，按引导缓慢转头</string>
@@ -28,6 +29,9 @@
     <string name="guide_lookup">缓慢抬头</string>
     <string name="guide_lookdown">缓慢低头</string>
     <string name="guide_finish">正在完成 3D 建模…</string>
+    <string name="guide_slow_down">很好，转慢一点、幅度小一点就好</string>
+    <string name="guide_too_far">很好，稍微转回来一点就好</string>
+    <string name="guide_auto_capture">正视镜头，光点将自动点亮</string>
 
     <string name="verified_as">验证通过</string>
     <string name="enrolled_as">已录入</string>
